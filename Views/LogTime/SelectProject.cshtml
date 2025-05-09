@@ -1,0 +1,43 @@
+﻿
+@model List<Switchgear_TimeTracker.Models.TblProject>
+@{
+    ViewData["Title"] = "Project Select";
+}
+
+<div class="text-center">
+    <select class="projectInput" id="selectProjectID">
+        <option value="" disabled selected>Select a project</option>
+            @foreach (var project in Model)
+            {
+                <option value="@project.Id">@project.ProjectNo</option>
+            }
+        </select>
+        <h4>or</h4>
+        <h3>Scan Project ID</h3>
+    <input type="text" id="scanProjectID" autofocus />
+</div>
+
+@section Scripts {
+    <script>
+        function selectProject() {
+            let scannedProjectId = this.value;
+            const projectList = @Html.Raw(Json.Serialize(Model));
+            try {
+                scannedProjectId = parseInt(scannedProjectId);
+            }
+            catch (error) {
+                console.error(error);
+                window.alert("Scanned item was not an integer. See console for more information the error.");
+            }
+            const isInProjectList = projectList.find(project => project.id === scannedProjectId);
+            if (isInProjectList) {
+                window.location.href = `/LogTime/Index?projectId=${scannedProjectId}`;
+            }
+            else {
+                window.alert("Scanned project is not in the database")
+            }
+        }
+        document.getElementById("selectProjectID").addEventListener("change", selectProject);
+        document.getElementById("scanProjectID").addEventListener("change", selectProject);
+    </script>
+}
