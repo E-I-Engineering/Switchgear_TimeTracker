@@ -30,20 +30,30 @@ namespace Switchgear_TimeTracker.Controllers
             {
                 return View();
             }
+            // All timestamps for the selected project
             var laborTimeStamps = await _context
                 .TblLaborTimeStamps
                 .Where(timeStamp => timeStamp.ProjectId == projectId)
                 .ToListAsync();
-
+            // Calculate logged time for this project
+            var closedTimeStamps = laborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
+            var totalHoursWorked = 0.0;
+            foreach (var laborTimeStamp in closedTimeStamps)
+            {
+                var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
+                var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
+                var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
+                totalHoursWorked += timeStampClockedMilliseconds.TotalHours;
+            }
             var viewModel = new ProjectLogViewModel
             {
                 SelectedProject = selectedProject,
                 LaborTimeStamps = laborTimeStamps,
-                HoursWorked = 5042651
+                HoursWorked = Math.Round(totalHoursWorked, 2)
             };
             return View(viewModel);
         }
-
+       
 
 
 
