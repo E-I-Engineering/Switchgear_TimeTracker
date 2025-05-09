@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Switchgear_TimeTracker.Data;
@@ -20,9 +21,15 @@ namespace Switchgear_TimeTracker.Controllers
             var project = await _context.TblProjects.ToListAsync();
             return View(project);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? projectId)
         {
-            return View();
+            var selectedProject = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == projectId);
+
+            if (selectedProject == null)
+            {
+                return View();
+            }
+            return View(selectedProject);
         }
 
 
