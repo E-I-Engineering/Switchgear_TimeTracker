@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Switchgear_TimeTracker.Data;
+using Switchgear_TimeTracker.Models;
 
 namespace Switchgear_TimeTracker.Controllers
 {
@@ -29,7 +30,17 @@ namespace Switchgear_TimeTracker.Controllers
             {
                 return View();
             }
-            return View(selectedProject);
+            var laborTimeStamps = await _context
+                .TblLaborTimeStamps
+                .Where(timeStamp => timeStamp.ProjectId == projectId)
+                .ToListAsync();
+
+            var viewModel = new ProjectLogViewModel
+            {
+                SelectedProject = selectedProject,
+                LaborTimeStamps = laborTimeStamps
+            };
+            return View(viewModel);
         }
 
 

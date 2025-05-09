@@ -1,18 +1,35 @@
-﻿@model Switchgear_TimeTracker.Models.TblProject
+﻿@model ProjectLogViewModel
 @{
     ViewData["Title"] = "Log Time";
+    // filter time stamps for ones currently running
+    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
 }
-    
-    <h1>Project Work Logger</h1>
-    <section>
-        @if (Model != null)
-            {
-                <h2>Project: @Model.ProjectNo</h2>
-            }
-        else
-            {
-                <h2>No Project Selected</h2>
-            }
-        <a href="/LogTime/SelectProject">Change Project</a>
-    </section>
+
+<h1>Project Work Logger</h1>
+<section>
+    @if (Model != null)
+    {
+        <h2>Project: @Model.SelectedProject.ProjectNo</h2>
+    }
+    else
+    {
+        <h2>No Project Selected</h2>
+    }
+    <a href="/LogTime/SelectProject">Change Project</a>
+</section>
+    @if (Model != null)
+        {
+            <section>
+                <dl>
+                    <dt>Time worked</dt>
+                    <dd>To be added</dd>
+
+                    <dt>Hours Required</dt>
+                    <dd>To be added</dd>
+
+                    <dt>Employees working</dt>
+                    <dd>@workingUsers.Count()</dd>
+                </dl>
+            </section>
+        }
 
