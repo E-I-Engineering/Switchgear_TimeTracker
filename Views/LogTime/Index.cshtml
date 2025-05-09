@@ -1,8 +1,6 @@
 ﻿@model ProjectLogViewModel
 @{
     ViewData["Title"] = "Log Time";
-    // filter time stamps for ones currently running
-    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
 }
 
 <h1>Project Work Logger</h1>
@@ -17,19 +15,27 @@
     }
     <a href="/LogTime/SelectProject">Change Project</a>
 </section>
-    @if (Model != null)
-        {
-            <section>
-                <dl>
-                    <dt>Time worked</dt>
-                    <dd>To be added</dd>
+@if (Model != null)
+{
+    // filter time stamps for ones currently running
+    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
+    <section>
+        <dl>
+            <dt>Time worked</dt>
+            <dd>@Model.HoursWorked</dd>
 
-                    <dt>Hours Required</dt>
-                    <dd>To be added</dd>
+            <dt>Hours Required</dt>
+            <dd>To be added</dd>
 
-                    <dt>Employees working</dt>
-                    <dd>@workingUsers.Count()</dd>
-                </dl>
+            <dt>Employees working</dt>
+            <dd>@workingUsers.Count()</dd>
+        </dl>
+        <ul>
+            @foreach(var timeStamp in workingUsers)
+            {
+                <li>@timeStamp.User</li>
+            }
+        </ul>
             </section>
         }
 

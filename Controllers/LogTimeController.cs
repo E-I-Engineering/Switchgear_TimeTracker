@@ -38,7 +38,8 @@ namespace Switchgear_TimeTracker.Controllers
             var viewModel = new ProjectLogViewModel
             {
                 SelectedProject = selectedProject,
-                LaborTimeStamps = laborTimeStamps
+                LaborTimeStamps = laborTimeStamps,
+                HoursWorked = 5042651
             };
             return View(viewModel);
         }
