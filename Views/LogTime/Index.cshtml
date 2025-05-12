@@ -1,9 +1,7 @@
 ﻿@model ProjectLogViewModel
 @{
-    ViewData["Title"] = "Log Time";
+    ViewData["Title"] = "Project Work Logger";
 }
-
-<h1>Project Work Logger</h1>
 <section>
     @if (Model != null)
     {
@@ -15,6 +13,11 @@
     }
     <a href="/LogTime/SelectProject">Change Project</a>
 </section>
+<form method='post' action="/LogTime/ClockUserInOut">
+    @Html.AntiForgeryToken()
+    <h2>Clock in/out</h2>
+    <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()"/>
+</form>
 @if (Model != null)
 {
     // filter time stamps for ones currently running
