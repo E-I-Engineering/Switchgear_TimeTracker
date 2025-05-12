@@ -24,5 +24,5 @@ public partial class TblEmployee
     public int? ClockNumber { get; set; }
 
     [InverseProperty("User")]
-    public virtual TblLaborTimeStamp? TblLaborTimeStamp { get; set; }
+    public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
 }

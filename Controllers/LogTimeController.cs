@@ -50,6 +50,7 @@ namespace Switchgear_TimeTracker.Controllers
             // All timestamps for the selected project
             var laborTimeStamps = await _context
                 .TblLaborTimeStamps
+                .Include(t => t.User)
                 .Where(timeStamp => timeStamp.ProjectId == projectId)
                 .ToListAsync();
             // Calculate logged time for this project
