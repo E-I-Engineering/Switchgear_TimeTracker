@@ -13,14 +13,20 @@
     }
     <a href="/LogTime/SelectProject">Change Project</a>
 </section>
-<form method='post' action="/LogTime/ClockUserInOut">
-    @Html.AntiForgeryToken()
-    <h2>Clock in/out</h2>
-    <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()"/>
-</form>
+
 @if (Model != null)
 {
     // filter time stamps for ones currently running
+    <form method='post' action="/LogTime/ClockUserInOut">
+        @Html.AntiForgeryToken()
+        <h2>Clock in/out</h2>
+        <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()" />
+        <input name="projectClock"
+               id="projectClock"
+               type="number"
+               style="display:none"
+               value=@Model.SelectedProject.Id />
+    </form>
     var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
     <section>
         <dl>

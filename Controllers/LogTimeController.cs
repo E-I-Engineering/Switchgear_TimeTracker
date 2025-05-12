@@ -28,16 +28,16 @@ namespace Switchgear_TimeTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClockUserInOut(IFormCollection form)
         {
-            var userClock = form["userClock"].ToString();
-            if (string.IsNullOrWhiteSpace(userClock))
+            var userClockInput = form["userClock"].ToString();
+            if (string.IsNullOrWhiteSpace(userClockInput))
             {
                 return BadRequest("Missing userClock value.");
             }
-
-            var clockUserID = new SqlParameter("@clockUserID", userClock);
-            var clockProjectID = new SqlParameter("@clockProjectID", 23);
+            var projectClockInput = form["projectClock"].ToString();
+            var clockUserID = new SqlParameter("@clockUserID", userClockInput);
+            var clockProjectID = new SqlParameter("@clockProjectID", projectClockInput);
             await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockProjectID", clockUserID, clockProjectID);
-            return RedirectToAction("Index", new { projectId = 23 });
+            return RedirectToAction("Index", new { projectId = projectClockInput });
         }
         public async Task<IActionResult> Index(int? projectId)
         {
