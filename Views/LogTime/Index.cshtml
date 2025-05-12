@@ -16,18 +16,22 @@
 
 @if (Model != null)
 {
+    if (Model.SelectedProject == null)
+    {
+        <h2>no data available</h2>
+    }
     // filter time stamps for ones currently running
+    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
     <form method='post' action="/LogTime/ClockUserInOut">
         @Html.AntiForgeryToken()
         <h2>Clock in/out</h2>
-        <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()" />
+        <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
         <input name="projectClock"
-               id="projectClock"
-               type="number"
-               style="display:none"
-               value=@Model.SelectedProject.Id />
+        id="projectClock"
+        type="number"
+        style="display:none"
+        value=@Model.SelectedProject.Id />
     </form>
-    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
     <section>
         <dl>
             <dt>Hours worked</dt>
@@ -40,11 +44,13 @@
             <dd>@workingUsers.Count()</dd>
         </dl>
         <ul>
-            @foreach(var timeStamp in workingUsers)
-            {
-                <li>@timeStamp.User</li>
-            }
+            @foreach (var timeStamp in workingUsers)
+            {                
+            string userName = timeStamp.User?.FullName ?? "Unknown User";
+                <li>
+                    @userName
+                </li>
+            }            
         </ul>
-            </section>
-        }
-
+    </section>
+}

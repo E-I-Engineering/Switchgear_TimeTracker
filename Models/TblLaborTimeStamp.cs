@@ -31,10 +31,6 @@ public partial class TblLaborTimeStamp
     public virtual TblProject Project { get; set; } = null!;
 
     [ForeignKey("UserId")]
-    [InverseProperty("TblLaborTimeStamp")]
+    [InverseProperty("TblLaborTimeStamps")]
     public virtual TblEmployee User { get; set; } = null!;
-
-    string connectionString = "Data Source=SCSQL01;Initial Catalog=us_switchgear;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
-
-    //public TblLaborTimeStamp
 }

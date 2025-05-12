@@ -327,7 +327,7 @@ public partial class UsSwitchgearContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ProjectID");
 
-            entity.HasOne(d => d.User).WithOne(p => p.TblLaborTimeStamp)
+            entity.HasOne(d => d.User).WithMany(p => p.TblLaborTimeStamps)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("UserID");
         });
