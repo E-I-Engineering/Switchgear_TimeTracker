@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace Switchgear_TimeTracker.Models;
 
@@ -32,4 +33,8 @@ public partial class TblLaborTimeStamp
     [ForeignKey("UserId")]
     [InverseProperty("TblLaborTimeStamp")]
     public virtual TblEmployee User { get; set; } = null!;
+
+    string connectionString = "Data Source=SCSQL01;Initial Catalog=us_switchgear;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+
+    //public TblLaborTimeStamp
 }

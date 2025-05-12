@@ -1,6 +1,50 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ProjectLogViewModel
 @{
-    <p>Log Work Here</p>
+    ViewData["Title"] = "Project Work Logger";
 }
+<section>
+    @if (Model != null)
+    {
+        <h2>Project: @Model.SelectedProject.ProjectNo</h2>
+    }
+    else
+    {
+        <h2>No Project Selected</h2>
+    }
+    <a href="/LogTime/SelectProject">Change Project</a>
+</section>
+
+@if (Model != null)
+{
+    // filter time stamps for ones currently running
+    <form method='post' action="/LogTime/ClockUserInOut">
+        @Html.AntiForgeryToken()
+        <h2>Clock in/out</h2>
+        <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()" />
+        <input name="projectClock"
+               id="projectClock"
+               type="number"
+               style="display:none"
+               value=@Model.SelectedProject.Id />
+    </form>
+    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
+    <section>
+        <dl>
+            <dt>Hours worked</dt>
+            <dd>@Model.HoursWorked</dd>
+
+            <dt>Hours Required</dt>
+            <dd>To be added</dd>
+
+            <dt>Employees working</dt>
+            <dd>@workingUsers.Count()</dd>
+        </dl>
+        <ul>
+            @foreach(var timeStamp in workingUsers)
+            {
+                <li>@timeStamp.User</li>
+            }
+        </ul>
+            </section>
+        }
+
