@@ -26,10 +26,10 @@
     <form method='post' action="/LogTime/ClockUserInOut">
         @Html.AntiForgeryToken()
         <h2>Clock in/out</h2>
-        <input name="userClock" id="userClock" type="number" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
+        <input name="userClock" id="userClock" type="text" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
         <input name="projectClock"
         id="projectClock"
-        type="number"
+        type="text"
         style="display:none"
         value=@Model.SelectedProject.Id />
     </form>
