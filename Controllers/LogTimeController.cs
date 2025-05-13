@@ -28,15 +28,46 @@ namespace Switchgear_TimeTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClockUserInOut(IFormCollection form)
         {
-            var userClockInput = form["userClock"].ToString();
-            if (string.IsNullOrWhiteSpace(userClockInput))
-            {
-                return BadRequest("Missing userClock value.");
-            }
             var projectClockInput = form["projectClock"].ToString();
-            var clockUserID = new SqlParameter("@clockUserID", userClockInput);
-            var clockProjectID = new SqlParameter("@clockProjectID", projectClockInput);
-            await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockProjectID", clockUserID, clockProjectID);
+            try
+            {
+
+                var userClockInput = form["userClock"].ToString();
+                if (string.IsNullOrWhiteSpace(userClockInput))
+                {
+                    return BadRequest("Missing userClock value.");
+                }
+                var clockUserID = new SqlParameter("@clockUserID", userClockInput);
+                var clockProjectID = new SqlParameter("@clockProjectID", projectClockInput);
+                // create output parameter for stored procedure
+                var resultMessage = new SqlParameter
+                {
+                    ParameterName = "@resultMessage",
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                    Size = 1000,
+                    Direction = System.Data.ParameterDirection.Output
+                };
+                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockProjectID, @resultMessage OUTPUT", clockUserID, clockProjectID, resultMessage);
+                TempData["AlertMessage"] = resultMessage.Value;
+                TempData["AlertType"] = "Success";
+                TempData["ErrorText"] = null;
+            }
+            catch (Exception ex)
+            {
+                string alertType = "Failure";
+                TempData["AlertType"] = alertType;
+                if (ex.Message.IndexOf("FOREIGN KEY constraint") >= 0)
+                    // User scanned/typed a user id that is not in the database. SQL Server restraints prevent insertion. Instruct user to have missing user added to db
+                {
+                    TempData["AlertMessage"] = alertType + ": User does not exist in database. Please add user.";
+                    TempData["ErrorText"] = Convert.ToString(ex.Message);
+                }
+                else
+                {
+                    TempData["AlertMessage"] = alertType + ": User was not clocked in. Try again later. Contact Coleman Alexander if problem persists.";
+                    TempData["ErrorText"] = Convert.ToString(ex.Message);
+                }
+            }
             return RedirectToAction("Index", new { projectId = projectClockInput });
         }
         public async Task<IActionResult> Index(int? projectId)
@@ -71,7 +102,7 @@ namespace Switchgear_TimeTracker.Controllers
             };
             return View(viewModel);
         }
-       
+
 
 
 

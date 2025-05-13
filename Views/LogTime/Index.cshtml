@@ -1,9 +1,10 @@
 ﻿@model ProjectLogViewModel
 @{
+    string alertType = Convert.ToString(TempData["AlertType"]);
     ViewData["Title"] = "Project Work Logger";
 }
 <section>
-    @if (Model != null)
+    @if (@Model != null)
     {
         <h2>Project: @Model.SelectedProject.ProjectNo</h2>
     }
@@ -32,6 +33,18 @@
         style="display:none"
         value=@Model.SelectedProject.Id />
     </form>
+    if (TempData["AlertMessage"] != null)
+    {
+        <div class="alert @alertType">
+            <strong>@Html.Raw(TempData["AlertMessage"])</strong>
+            @if (TempData["ErrorText"] != null)
+            {                
+                <br />
+                <br />
+                <p>Error: @TempData["ErrorText"]</p>
+            }
+        </div>
+    }
     <section>
         <dl>
             <dt>Hours worked</dt>
@@ -45,12 +58,12 @@
         </dl>
         <ul>
             @foreach (var timeStamp in workingUsers)
-            {                
-            string userName = timeStamp.User?.FullName ?? "Unknown User";
+            {
+                string userName = timeStamp.User?.FullName ?? "Unknown User";
                 <li>
                     @userName
                 </li>
-            }            
+            }
         </ul>
     </section>
 }
