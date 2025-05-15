@@ -24,15 +24,11 @@ public partial class UsSwitchgearContext : DbContext
 
     public virtual DbSet<TblProjectPanelInfo> TblProjectPanelInfos { get; set; }
 
-    public virtual DbSet<TblTemplateArea> TblTemplateAreas { get; set; }
-
     public virtual DbSet<TblTemplatePlanningArea> TblTemplatePlanningAreas { get; set; }
 
     public virtual DbSet<TblTemplatePlanningPanelInfo> TblTemplatePlanningPanelInfos { get; set; }
 
     public virtual DbSet<TblTemplatePlanningTime> TblTemplatePlanningTimes { get; set; }
-
-    public virtual DbSet<TblUpdateIfsEarlyFinishError> TblUpdateIfsEarlyFinishErrors { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -54,7 +50,7 @@ public partial class UsSwitchgearContext : DbContext
                 .IsUnique()
                 .HasFilter("([ClockOut] IS NULL)");
 
-            entity.HasOne(d => d.Project).WithMany(p => p.TblLaborTimeStamps)
+            entity.HasOne(d => d.Panel).WithMany(p => p.TblLaborTimeStamps)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ProjectID");
 
@@ -68,20 +64,9 @@ public partial class UsSwitchgearContext : DbContext
             entity.Property(e => e.DepartmentId).HasDefaultValue(1);
         });
 
-        modelBuilder.Entity<TblTemplateArea>(entity =>
-        {
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.Property(e => e.IsSub).IsFixedLength();
-        });
-
         modelBuilder.Entity<TblTemplatePlanningArea>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_tbl_template_area");
-        });
-
-        modelBuilder.Entity<TblUpdateIfsEarlyFinishError>(entity =>
-        {
-            entity.Property(e => e.ReportDate).HasDefaultValueSql("(getdate())");
         });
 
         OnModelCreatingPartial(modelBuilder);

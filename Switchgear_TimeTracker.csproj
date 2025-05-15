@@ -48,9 +48,11 @@
     <Compile Remove="Models\TblTaskTemplate.cs" />
     <Compile Remove="Models\TblTeam.cs" />
     <Compile Remove="Models\TblTempItemList.cs" />
+    <Compile Remove="Models\TblTemplateArea.cs" />
     <Compile Remove="Models\TblTransaction.cs" />
     <Compile Remove="Models\TblTransactionsArea.cs" />
     <Compile Remove="Models\TblTransactionsPicture.cs" />
+    <Compile Remove="Models\TblUpdateIfsEarlyFinishError.cs" />
     <Compile Remove="Models\TeamAssignment.cs" />
     <Compile Remove="Models\Temp.cs" />
     <Compile Remove="Models\TempStorePickListItem.cs" />
@@ -89,6 +91,10 @@
     <Compile Remove="Models\ViewTransactionActivity.cs" />
     <Compile Remove="Models\ViewTransactionsDistinct.cs" />
     <Compile Remove="Models\ViewUnionArea.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
   </ItemGroup>
 
   <ItemGroup>

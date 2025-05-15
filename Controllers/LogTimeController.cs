@@ -70,9 +70,9 @@ namespace Switchgear_TimeTracker.Controllers
             }
             return RedirectToAction("Index", new { projectId = projectClockInput });
         }
-        public async Task<IActionResult> Index(int? projectId)
+        public async Task<IActionResult> Index(int? panelID)
         {
-            var selectedProject = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == projectId);
+            var selectedProject = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == panelID);
 
             if (selectedProject == null)
             {
@@ -82,7 +82,7 @@ namespace Switchgear_TimeTracker.Controllers
             var laborTimeStamps = await _context
                 .TblLaborTimeStamps
                 .Include(t => t.User)
-                .Where(timeStamp => timeStamp.ProjectId == projectId)
+                .Where(timeStamp => timeStamp.PanelId == panelID)
                 .ToListAsync();
             // Calculate logged time for this project
             var closedTimeStamps = laborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
