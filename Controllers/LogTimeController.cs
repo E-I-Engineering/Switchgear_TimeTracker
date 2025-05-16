@@ -76,36 +76,66 @@ namespace Switchgear_TimeTracker.Controllers
             if (taskID == null) 
             {
                 return RedirectToAction("SelectTask");
-            }
-            var selectedTask = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == taskID);
+            }            
+            var selectedTask = await _context.TblTemplatePlanningPanelInfos
+                .Include(t => t.Pannel)
+                .Include(t => t.Pannel.Project)
+                .FirstOrDefaultAsync(task => task.Id == taskID);
 
             if (selectedTask == null)
             {
-                return View();
+                TempData["AlertMessage"] = "Task Id not found";
+                TempData["AlertType"] = "Failure";
+                TempData["ErrorText"] = "Invalid task ID scanned";
+                return RedirectToAction("SelectTask");
             }
-            // All timestamps for the selected project
-            var laborTimeStamps = await _context
-                .TblLaborTimeStamps
-                .Include(t => t.User)
-                .Include(t => t.Panel)
-                .Include(t => t.Task)
-                .Where(timeStamp => timeStamp.TaskId == taskID) // ? adjust to get tasks
-                .ToListAsync();
+            else
+            {
+                TempData["AlertMessage"] = null;
+                TempData["AlertType"] = null;
+                TempData["ErrorText"] = null;
+            }
+                // All timestamps for the selected project
+                var projectLaborTimeStamps = await _context
+                    .TblLaborTimeStamps
+                    .Include(t => t.User)
+                    //.Include(t => t.Panel)
+                    //.Include(t => t.Task)
+                    .Where(timeStamp => timeStamp.Panel.ProjectId == selectedTask.ProjectId)
+                    .ToListAsync();
+
+            var hoursWorked = new Dictionary<string, double>();
             // Calculate logged time for this project
-            var closedTimeStamps = laborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
-            var totalHoursWorked = 0.0;
-            foreach (var laborTimeStamp in closedTimeStamps)
+            var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
+            hoursWorked.Add("project", 0.0);
+            foreach (var laborTimeStamp in projectClosedTimeStamps)
             {
                 var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
                 var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
                 var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
-                totalHoursWorked += timeStampClockedMilliseconds.TotalHours;
+                hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
+            }
+            // Filter timestamps for selected task only
+            var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
+            // Calculate logged time for this Task on this project
+            var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null);
+            hoursWorked.Add("task", 0.0);
+            foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
+            {
+                var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
+                var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
+                var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
+                hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
             }
             var viewModel = new TaskLogsViewModel
             {
-                SelectedProject = selectedTask,
-                LaborTimeStamps = laborTimeStamps,
-                HoursWorked = Math.Round(totalHoursWorked, 2)
+                SelectedTask = selectedTask,
+                LaborTimeStamps = taskLaborTimeStamps,
+                HoursWorked = hoursWorked
+                //{
+                //    "project": Math.Round(totalProjectHoursWorked, 2),
+                //    "task": Math.Round(totalTaskHoursWorked, 2)
+                //}
             };
             return View(viewModel);
         }

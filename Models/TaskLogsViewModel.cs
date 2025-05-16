@@ -2,13 +2,13 @@
 {
     public class TaskLogsViewModel
     {
-        // Property to hold the selected project
-        public TblProject SelectedProject { get; set; }
+        // Property to hold the selected Task
+        public TblTemplatePlanningPanelInfo SelectedTask { get; set; }
 
         // Property to hold a list of labor time stamps
-        public List<TblLaborTimeStamp> LaborTimeStamps { get; set; }
+        public IEnumerable<TblLaborTimeStamp> LaborTimeStamps { get; set; }
 
         // Property to hold amount of time worked logged on this project minus work currently being clocked
-        public double HoursWorked { get; set; }
+        public Dictionary<string, double> HoursWorked { get; set; }
     }
 }
