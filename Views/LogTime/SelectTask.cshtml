@@ -1,0 +1,35 @@
+﻿
+@model List<Switchgear_TimeTracker.Models.TblProject>
+@{
+    ViewData["Title"] = "Task Select";
+}
+
+<div class="text-center">
+    @* Add this selection back along with panel and task selection *@
+    @* <select class="projectInput" id="selectProjectID"> *@
+    @*     <option value="" disabled selected>Select a project</option> *@
+    @*         @foreach (var project in Model) *@
+    @*         { *@
+    @*             <option value="@project.Id">@project.ProjectNo</option> *@
+    @*         } *@
+    @*     </select> *@
+        @* <h4>or</h4> *@
+        <h3>Scan Panel/Task Code</h3>
+    <input type="text" id="scanTaskID" autofocus />
+</div>
+
+@section Scripts {
+    <script>
+        function selectProject() {
+            const selectedProjectId = this.value;
+            window.location.href = `/LogTime/TaskSelect?projectId=${selectedProjectId}`;
+        }
+        function scanTask() {
+            const scannedTaskID = this.value;
+            window.location.href = `/LogTime/Index?taskID=${scannedTaskID}`;
+            
+        }
+        // document.getElementById("selectProjectID").addEventListener("change", selectProject);
+        document.getElementById("scanTaskID").addEventListener("change", scanTask);
+    </script>
+}

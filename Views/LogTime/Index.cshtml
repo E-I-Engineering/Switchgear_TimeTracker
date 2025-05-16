@@ -1,4 +1,4 @@
-﻿@model ProjectLogViewModel
+﻿@model TaskLogsViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
     ViewData["Title"] = "Project Work Logger";
@@ -12,7 +12,7 @@
     {
         <h2>No Project Selected</h2>
     }
-    <a href="/LogTime/SelectProject">Change Project</a>
+    <a href="/LogTime/SelectTask">Change Task</a>
 </section>
 
 @if (Model != null)

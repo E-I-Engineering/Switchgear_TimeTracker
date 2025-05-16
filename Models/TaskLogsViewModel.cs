@@ -1,6 +1,6 @@
 ﻿namespace Switchgear_TimeTracker.Models
 {
-    public class ProjectLogViewModel
+    public class TaskLogsViewModel
     {
         // Property to hold the selected project
         public TblProject SelectedProject { get; set; }

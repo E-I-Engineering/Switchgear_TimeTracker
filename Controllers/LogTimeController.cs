@@ -19,7 +19,7 @@ namespace Switchgear_TimeTracker.Controllers
 
         }
 
-        public async Task<IActionResult> SelectProject()
+        public async Task<IActionResult> SelectTask()
         {
             var project = await _context.TblProjects.ToListAsync();
             return View(project);
@@ -70,11 +70,16 @@ namespace Switchgear_TimeTracker.Controllers
             }
             return RedirectToAction("Index", new { projectId = projectClockInput });
         }
-        public async Task<IActionResult> Index(int? panelID)
+        public async Task<IActionResult> Index(int? taskID)
         {
-            var selectedProject = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == panelID);
+            // If task is not selected, redirect to select task page
+            if (taskID == null) 
+            {
+                return RedirectToAction("SelectTask");
+            }
+            var selectedTask = await _context.TblProjects.FirstOrDefaultAsync(proj => proj.Id == taskID);
 
-            if (selectedProject == null)
+            if (selectedTask == null)
             {
                 return View();
             }
@@ -82,7 +87,9 @@ namespace Switchgear_TimeTracker.Controllers
             var laborTimeStamps = await _context
                 .TblLaborTimeStamps
                 .Include(t => t.User)
-                .Where(timeStamp => timeStamp.PanelId == panelID)
+                .Include(t => t.Panel)
+                .Include(t => t.Task)
+                .Where(timeStamp => timeStamp.TaskId == taskID) // ? adjust to get tasks
                 .ToListAsync();
             // Calculate logged time for this project
             var closedTimeStamps = laborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
@@ -94,9 +101,9 @@ namespace Switchgear_TimeTracker.Controllers
                 var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
                 totalHoursWorked += timeStampClockedMilliseconds.TotalHours;
             }
-            var viewModel = new ProjectLogViewModel
+            var viewModel = new TaskLogsViewModel
             {
-                SelectedProject = selectedProject,
+                SelectedProject = selectedTask,
                 LaborTimeStamps = laborTimeStamps,
                 HoursWorked = Math.Round(totalHoursWorked, 2)
             };
