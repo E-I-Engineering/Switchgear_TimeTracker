@@ -30,10 +30,6 @@ public partial class TblLaborTimeStamp
     [Column(TypeName = "datetime")]
     public DateTime? ClockOut { get; set; }
 
-    [ForeignKey("PanelId")]
-    [InverseProperty("TblLaborTimeStamps")]
-    public virtual TblProjectPanelInfo Panel { get; set; }
-
     [ForeignKey("TaskId")]
     [InverseProperty("TblLaborTimeStamps")]
     public virtual TblTemplatePlanningTime Task { get; set; }

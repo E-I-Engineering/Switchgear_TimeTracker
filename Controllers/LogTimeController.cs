@@ -28,17 +28,16 @@ namespace Switchgear_TimeTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ClockUserInOut(IFormCollection form)
         {
-            var projectClockInput = form["projectClock"].ToString();
+            var taskClockInput = form["taskClock"].ToString();
             try
             {
-
                 var userClockInput = form["userClock"].ToString();
                 if (string.IsNullOrWhiteSpace(userClockInput))
                 {
                     return BadRequest("Missing userClock value.");
                 }
                 var clockUserID = new SqlParameter("@clockUserID", userClockInput);
-                var clockProjectID = new SqlParameter("@clockProjectID", projectClockInput);
+                var clockTaskID = new SqlParameter("@clockTaskID", taskClockInput);
                 // create output parameter for stored procedure
                 var resultMessage = new SqlParameter
                 {
@@ -47,7 +46,7 @@ namespace Switchgear_TimeTracker.Controllers
                     Size = 1000,
                     Direction = System.Data.ParameterDirection.Output
                 };
-                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockProjectID, @resultMessage OUTPUT", clockUserID, clockProjectID, resultMessage);
+                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @resultMessage OUTPUT", clockUserID, clockTaskID, resultMessage);
                 TempData["AlertMessage"] = resultMessage.Value;
                 TempData["AlertType"] = "Success";
                 TempData["ErrorText"] = null;
@@ -68,7 +67,7 @@ namespace Switchgear_TimeTracker.Controllers
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
                 }
             }
-            return RedirectToAction("Index", new { projectId = projectClockInput });
+            return RedirectToAction("Index", new { taskID = taskClockInput });
         }
         public async Task<IActionResult> Index(int? taskID)
         {
@@ -99,9 +98,9 @@ namespace Switchgear_TimeTracker.Controllers
                 var projectLaborTimeStamps = await _context
                     .TblLaborTimeStamps
                     .Include(t => t.User)
-                    //.Include(t => t.Panel)
+                    .Include(t => t.Task)
                     //.Include(t => t.Task)
-                    .Where(timeStamp => timeStamp.Panel.ProjectId == selectedTask.ProjectId)
+                    .Where(timeStamp => timeStamp.Task. == selectedTask.ProjectId)
                     .ToListAsync();
 
             var hoursWorked = new Dictionary<string, double>();

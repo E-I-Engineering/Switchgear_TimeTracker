@@ -1,7 +1,7 @@
 ﻿@model TaskLogsViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
-    ViewData["Title"] = "Project Work Logger";
+    ViewData["Title"] = "Time Logger";
 }
 <section>
     <h2>Project: @Model.SelectedTask.Pannel.Project.ProjectNo</h2>
@@ -16,8 +16,8 @@
         @Html.AntiForgeryToken()
         <h2>Clock in/out</h2>
         <input name="userClock" id="userClock" type="text" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
-        <input name="projectClock"
-        id="projectClock"
+        <input name="taskClock"
+        id="taskClock"
         type="text"
         style="display:none"
         value=@Model.SelectedTask.Id />
@@ -37,10 +37,10 @@
     <section>
         <dl>
             <dt>Project Hours worked</dt>
-            <dd>To be added</dd>
+            <dd>@Model.HoursWorked["project"]</dd>
 
             <dt>Task Hours worked</dt>
-            <dd>To be added</dd>
+            <dd>@Model.HoursWorked["task"]</dd>
 
             <dt>Hours Required</dt>
             <dd>To be added</dd>
