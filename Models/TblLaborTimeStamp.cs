@@ -18,9 +18,6 @@ public partial class TblLaborTimeStamp
     [Column("UserID")]
     public int UserId { get; set; }
 
-    [Column("PanelID")]
-    public int PanelId { get; set; }
-
     [Column("TaskID")]
     public int? TaskId { get; set; }
 
@@ -32,7 +29,7 @@ public partial class TblLaborTimeStamp
 
     [ForeignKey("TaskId")]
     [InverseProperty("TblLaborTimeStamps")]
-    public virtual TblTemplatePlanningTime Task { get; set; }
+    public virtual TblTemplatePlanningPanelInfo Task { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("TblLaborTimeStamps")]

@@ -50,10 +50,6 @@ public partial class UsSwitchgearContext : DbContext
                 .IsUnique()
                 .HasFilter("([ClockOut] IS NULL)");
 
-            entity.HasOne(d => d.Panel).WithMany(p => p.TblLaborTimeStamps)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ProjectID");
-
             entity.HasOne(d => d.User).WithMany(p => p.TblLaborTimeStamps)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("UserID");

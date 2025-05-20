@@ -46,4 +46,7 @@ public partial class TblTemplatePlanningPanelInfo
     [ForeignKey("PannelId")]
     [InverseProperty("TblTemplatePlanningPanelInfos")]
     public virtual TblProjectPanelInfo Pannel { get; set; }
+
+    [InverseProperty("Task")]
+    public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
 }

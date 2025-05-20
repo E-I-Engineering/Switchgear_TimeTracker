@@ -30,9 +30,6 @@ public partial class TblTemplatePlanningTime
     [InverseProperty("TblTemplatePlanningTimes")]
     public virtual TblTemplatePlanningArea Area { get; set; }
 
-    [InverseProperty("Task")]
-    public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
-
     [InverseProperty("Action")]
     public virtual ICollection<TblTemplatePlanningPanelInfo> TblTemplatePlanningPanelInfos { get; set; } = new List<TblTemplatePlanningPanelInfo>();
 }

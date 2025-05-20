@@ -1,6 +1,8 @@
 ﻿@model TaskLogsViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
+    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
+    string errorText = Convert.ToString(TempData["ErrorText"]);
     ViewData["Title"] = "Time Logger";
 }
 <section>
@@ -8,10 +10,11 @@
     <a href="/LogTime/SelectTask">Change Task</a>
 </section>
 
+
     @{
         // filter time stamps for ones currently running
         var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
-    }    
+}
     <form method='post' action="/LogTime/ClockUserInOut">
         @Html.AntiForgeryToken()
         <h2>Clock in/out</h2>
@@ -22,15 +25,16 @@
         style="display:none"
         value=@Model.SelectedTask.Id />
     </form>
-    @if (TempData["AlertMessage"] != null)
+    <p>DEBUG > Type: '@alertType' | Message: '@alertMessage'</p>
+    @if (!string.IsNullOrEmpty(alertMessage))
     {
-        <div class="alert @alertType">
-            <strong>@Html.Raw(TempData["AlertMessage"])</strong>
-            @if (TempData["ErrorText"] != null)
+        <div class="alert @alertType alert-suc">
+        <strong>@Html.Raw(alertMessage)</strong>
+        @if (errorText != null)
             {                
                 <br />
                 <br />
-                <p>Error: @TempData["ErrorText"]</p>
+            <p>Error: @errorText</p>
             }
         </div>
     }
@@ -45,16 +49,16 @@
             <dt>Hours Required</dt>
             <dd>To be added</dd>
 
-            @* <dt>Employees working</dt> *@
-            @* <dd>@workingUsers.Count()</dd> *@
+             <dt>Employees working</dt> 
+             <dd>@workingUsers.Count()</dd> 
         </dl>
         <ul>
-            @* @foreach (var timeStamp in workingUsers) *@
-            @* { *@
-            @*     string userName = timeStamp.User?.FullName ?? "Unknown User"; *@
-            @*     <li> *@
-            @*         @userName *@
-            @*     </li> *@
-            @* } *@
+             @foreach (var timeStamp in workingUsers) 
+             { 
+                 string userName = timeStamp.User?.FullName ?? "Unknown User"; 
+                 <li> 
+                     @userName 
+                 </li> 
+             }
         </ul>
     </section>

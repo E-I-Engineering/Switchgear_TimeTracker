@@ -47,7 +47,7 @@ namespace Switchgear_TimeTracker.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
                 await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @resultMessage OUTPUT", clockUserID, clockTaskID, resultMessage);
-                TempData["AlertMessage"] = resultMessage.Value;
+                TempData["AlertMessage"] = "resultMessage.Value";
                 TempData["AlertType"] = "Success";
                 TempData["ErrorText"] = null;
             }
@@ -100,7 +100,7 @@ namespace Switchgear_TimeTracker.Controllers
                     .Include(t => t.User)
                     .Include(t => t.Task)
                     //.Include(t => t.Task)
-                    .Where(timeStamp => timeStamp.Task. == selectedTask.ProjectId)
+                    .Where(timeStamp => timeStamp.Task.Pannel.Project.Id == selectedTask.ProjectId)
                     .ToListAsync();
 
             var hoursWorked = new Dictionary<string, double>();
@@ -112,7 +112,7 @@ namespace Switchgear_TimeTracker.Controllers
                 var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
                 var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
                 var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
-                hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
+                hoursWorked["project"] += timeStampClockedMilliseconds.TotalHours;
             }
             // Filter timestamps for selected task only
             var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
@@ -126,15 +126,23 @@ namespace Switchgear_TimeTracker.Controllers
                 var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
                 hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
             }
+            // Round total results to 2 decimal places
+            hoursWorked["project"] = Math.Round(hoursWorked["project"], 2);
+            hoursWorked["task"] = Math.Round(hoursWorked["task"], 2);
+
+
+            // All workers clocked into this task
+            var workingUsers = taskLaborTimeStamps
+                .Where(timestamp => timestamp.ClockOut != null)
+                .Select(timestamp => timestamp.User)
+                .ToList();
+
             var viewModel = new TaskLogsViewModel
             {
                 SelectedTask = selectedTask,
                 LaborTimeStamps = taskLaborTimeStamps,
-                HoursWorked = hoursWorked
-                //{
-                //    "project": Math.Round(totalProjectHoursWorked, 2),
-                //    "task": Math.Round(totalTaskHoursWorked, 2)
-                //}
+                HoursWorked = hoursWorked,
+                workingUsers = workingUsers
             };
             return View(viewModel);
         }
