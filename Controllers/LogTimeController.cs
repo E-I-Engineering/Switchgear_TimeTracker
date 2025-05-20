@@ -47,9 +47,8 @@ namespace Switchgear_TimeTracker.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
                 await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @resultMessage OUTPUT", clockUserID, clockTaskID, resultMessage);
-                TempData["AlertMessage"] = "resultMessage.Value";
+                TempData["AlertMessage"] = resultMessage.Value;
                 TempData["AlertType"] = "Success";
-                TempData["ErrorText"] = null;
             }
             catch (Exception ex)
             {
@@ -87,12 +86,6 @@ namespace Switchgear_TimeTracker.Controllers
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = "Invalid task ID scanned";
                 return RedirectToAction("SelectTask");
-            }
-            else
-            {
-                TempData["AlertMessage"] = null;
-                TempData["AlertType"] = null;
-                TempData["ErrorText"] = null;
             }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
