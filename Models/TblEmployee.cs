@@ -26,6 +26,9 @@ public partial class TblEmployee
 
     public int? ClockNumber { get; set; }
 
+    [Required]
+    [StringLength(100)]
+    [Unicode(false)]
     public string TagNo { get; set; }
 
     [InverseProperty("User")]

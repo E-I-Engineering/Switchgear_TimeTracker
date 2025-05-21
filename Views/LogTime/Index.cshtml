@@ -72,8 +72,8 @@
 <script>
 
          document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("clockInOutForm");
             // Takes rfid tag number and converts it to matching user ID before form submission
+            const form = document.getElementById("clockInOutForm");
             const userSelectIDInputElement = document.getElementById("userID");
             const userOptions = Array.from(userSelectIDInputElement.options);
             const userScanElement = document.getElementById("userTag");
@@ -83,7 +83,8 @@
                     const userTagNo = event.target.value.trim();
                     const matchedOption = userOptions.find(option => option.dataset.tagno === userTagNo);
                     if (!matchedOption) {
-                        alert("No user with that tag.")
+                        alert("No user with that tag.");
+                        userScanElement.value = "";
                         return;
                     }
                     matchedOption.selected = true;
