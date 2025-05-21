@@ -39,6 +39,9 @@ public partial class TblProjectPanelInfo
     [Column(TypeName = "numeric(18, 0)")]
     public decimal? TotalTime { get; set; }
 
+    [Column("TaskInfoID")]
+    public int? TaskInfoId { get; set; }
+
     [ForeignKey("ProjectId")]
     [InverseProperty("TblProjectPanelInfos")]
     public virtual TblProject Project { get; set; }

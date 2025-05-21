@@ -31,8 +31,8 @@ namespace Switchgear_TimeTracker.Controllers
             var taskClockInput = form["taskClock"].ToString();
             try
             {
-                var userClockInput = form["userClock"].ToString();
-                if (string.IsNullOrWhiteSpace(userClockInput))
+                var userClockInput = form["userID"].ToString();
+                if (string.IsNullOrEmpty(userClockInput))
                 {
                     return BadRequest("Missing userClock value.");
                 }
@@ -123,9 +123,18 @@ namespace Switchgear_TimeTracker.Controllers
             hoursWorked["project"] = Math.Round(hoursWorked["project"], 2);
             hoursWorked["task"] = Math.Round(hoursWorked["task"], 2);
 
-
-            // All workers clocked into this task
-            var workingUsers = taskLaborTimeStamps
+            // All workers
+            var allWorkers = await _context
+                .TblEmployees
+                .Select(employee => new SimpleEmployee
+                {
+                    Id = employee.Id,
+                    TagNo = employee.TagNo,
+                    Name = employee.FullName
+                })
+                .ToListAsync();
+            //All workers clocked into this task
+           var workingUsers = taskLaborTimeStamps
                 .Where(timestamp => timestamp.ClockOut != null)
                 .Select(timestamp => timestamp.User)
                 .ToList();
@@ -135,7 +144,7 @@ namespace Switchgear_TimeTracker.Controllers
                 SelectedTask = selectedTask,
                 LaborTimeStamps = taskLaborTimeStamps,
                 HoursWorked = hoursWorked,
-                workingUsers = workingUsers
+                SimpleAllWorkers = allWorkers
             };
             return View(viewModel);
         }

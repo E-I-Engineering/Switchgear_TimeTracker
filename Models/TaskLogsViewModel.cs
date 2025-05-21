@@ -11,7 +11,7 @@
         // Property to hold amount of time worked logged on this project minus work currently being clocked
         public Dictionary<string, double> HoursWorked { get; set; }
 
-        // Property to hold list of users clocked into this task
-        public IEnumerable<TblEmployee> workingUsers { get; set; }
+        // Property to hold list of all users for matching tagno to user ID
+        public IEnumerable<SimpleEmployee> SimpleAllWorkers { get; set; }
     }
 }

@@ -5,32 +5,38 @@
     string errorText = Convert.ToString(TempData["ErrorText"]);
     ViewData["Title"] = "Time Logger";
 }
+
 <section>
-    <h2>Project: @Model.SelectedTask.Pannel.Project.ProjectNo</h2>
+    <h2>Project: @Model?.SelectedTask?.Pannel?.Project?.ProjectNo</h2>
+    <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
+    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3>
     <a href="/LogTime/SelectTask">Change Task</a>
 </section>
 
 
-    @{
-        // filter time stamps for ones currently running
-        var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
-}
-    <form method='post' action="/LogTime/ClockUserInOut">
-        @Html.AntiForgeryToken()
-        <h2>Clock in/out</h2>
-        <input name="userClock" id="userClock" type="text" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
-        <input name="taskClock"
-        id="taskClock"
-        type="text"
-        style="display:none"
-        value=@Model.SelectedTask.Id />
+@{
+    // filter time stamps for ones currently running
+    var workingUsers = @Model?.LaborTimeStamps?.Where(timeStamp => timeStamp.ClockOut == null);
+}       
+<form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
+    @Html.AntiForgeryToken()
+    <h2>Clock in/out</h2>
+    <select id="userID" name="userID">
+        @foreach (var user in Model.SimpleAllWorkers)
+        {
+            <option data-tagno="@user.TagNo" value="@user.Id">
+                @user.Name
+            </option>
+        }
+    </select>
+        <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
+        <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     </form>
-    <p>DEBUG > Type: '@alertType' | Message: '@alertMessage'</p>
     @if (!string.IsNullOrEmpty(alertMessage))
     {
-        <div class="alert @alertType alert-suc">
+        <div class="alert @alertType">
         <strong>@Html.Raw(alertMessage)</strong>
-        @if (errorText != null)
+        @if (!string.IsNullOrEmpty(errorText))
             {                
                 <br />
                 <br />
@@ -62,3 +68,27 @@
              }
         </ul>
     </section>
+
+<script>
+
+         document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("clockInOutForm");
+            // Takes rfid tag number and converts it to matching user ID before form submission
+            const userSelectIDInputElement = document.getElementById("userID");
+            const userOptions = Array.from(userSelectIDInputElement.options);
+            const userScanElement = document.getElementById("userTag");
+            userScanElement.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    const userTagNo = event.target.value.trim();
+                    const matchedOption = userOptions.find(option => option.dataset.tagno === userTagNo);
+                    if (!matchedOption) {
+                        alert("No user with that tag.")
+                        return;
+                    }
+                    matchedOption.selected = true;
+                    form.submit();
+                }
+            })
+         });
+</script> 
