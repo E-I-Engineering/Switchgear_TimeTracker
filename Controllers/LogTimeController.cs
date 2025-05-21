@@ -78,6 +78,7 @@ namespace Switchgear_TimeTracker.Controllers
             var selectedTask = await _context.TblTemplatePlanningPanelInfos
                 .Include(t => t.Pannel)
                 .Include(t => t.Pannel.Project)
+                .Include(t => t.Action)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
             if (selectedTask == null)
