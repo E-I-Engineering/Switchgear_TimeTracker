@@ -1,10 +1,101 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\ActualHour.cs" />
+    <Compile Remove="Models\ExcludeFa.cs" />
+    <Compile Remove="Models\ExcludeMa.cs" />
+    <Compile Remove="Models\LaborValue.cs" />
+    <Compile Remove="Models\PlannedHoursPerWeek.cs" />
+    <Compile Remove="Models\PlannedHoursPerWeekLinesAdded.cs" />
+    <Compile Remove="Models\ProjectProductStructureTemp.cs" />
+    <Compile Remove="Models\SiopActionItemList.cs" />
+    <Compile Remove="Models\SwitchgearTest.cs" />
+    <Compile Remove="Models\TblActivity.cs" />
+    <Compile Remove="Models\TblAreaReportNewTimestamp.cs" />
+    <Compile Remove="Models\TblAsignTeam.cs" />
+    <Compile Remove="Models\TblAssignTeamFa.cs" />
+    <Compile Remove="Models\TblAssignTeamSa.cs" />
+    <Compile Remove="Models\TblChecklistSnaglist.cs" />
+    <Compile Remove="Models\TblChecklistTransaction.cs" />
+    <Compile Remove="Models\TblChecklistTransactionsDatum.cs" />
+    <Compile Remove="Models\TblClock.cs" />
+    <Compile Remove="Models\TblClockTransaction.cs" />
+    <Compile Remove="Models\TblDepartment.cs" />
+    <Compile Remove="Models\TblEmail.cs" />
+    <Compile Remove="Models\TblHoliday.cs" />
+    <Compile Remove="Models\TblImportClockData1.cs" />
+    <Compile Remove="Models\TblInfo.cs" />
+    <Compile Remove="Models\TblMisc.cs" />
+    <Compile Remove="Models\TblPanelEarlyfinishTemplate.cs" />
+    <Compile Remove="Models\TblPanelSizeTemplate.cs" />
+    <Compile Remove="Models\TblPerson.cs" />
+    <Compile Remove="Models\TblProjectChecklist.cs" />
+    <Compile Remove="Models\TblRemake.cs" />
+    <Compile Remove="Models\TblSmdMaterialBorrowTransaction.cs" />
+    <Compile Remove="Models\TblStoreInfo.cs" />
+    <Compile Remove="Models\TblStorePicklist.cs" />
+    <Compile Remove="Models\TblStorePicklistItem.cs" />
+    <Compile Remove="Models\TblStoreTransaction.cs" />
+    <Compile Remove="Models\TblSwgAreaReportTimestamp.cs" />
+    <Compile Remove="Models\TblSwgAreaReportTimestampList.cs" />
+    <Compile Remove="Models\TblSwgReportArea.cs" />
+    <Compile Remove="Models\TblTaskTemplate.cs" />
+    <Compile Remove="Models\TblTeam.cs" />
+    <Compile Remove="Models\TblTempItemList.cs" />
+    <Compile Remove="Models\TblTemplateArea.cs" />
+    <Compile Remove="Models\TblTransaction.cs" />
+    <Compile Remove="Models\TblTransactionsArea.cs" />
+    <Compile Remove="Models\TblTransactionsPicture.cs" />
+    <Compile Remove="Models\TblUpdateIfsEarlyFinishError.cs" />
+    <Compile Remove="Models\TeamAssignment.cs" />
+    <Compile Remove="Models\Temp.cs" />
+    <Compile Remove="Models\TempStorePickListItem.cs" />
+    <Compile Remove="Models\TempStorePickListLocation.cs" />
+    <Compile Remove="Models\TempTblProjectPanelInfo.cs" />
+    <Compile Remove="Models\TempTblTemplatePlanningPanelInfo.cs" />
+    <Compile Remove="Models\ViewActivityWithTeam.cs" />
+    <Compile Remove="Models\ViewFaAcbRow.cs" />
+    <Compile Remove="Models\ViewFaCableacce.cs" />
+    <Compile Remove="Models\ViewFaCamlock.cs" />
+    <Compile Remove="Models\ViewFaControlDoor.cs" />
+    <Compile Remove="Models\ViewFaFlange.cs" />
+    <Compile Remove="Models\ViewFainterlinking.cs" />
+    <Compile Remove="Models\ViewFaMccbspd2ndFix.cs" />
+    <Compile Remove="Models\ViewFaTime.cs" />
+    <Compile Remove="Models\ViewFaTxCopper.cs" />
+    <Compile Remove="Models\ViewFaWeeklyPlan.cs" />
+    <Compile Remove="Models\ViewIssue.cs" />
+    <Compile Remove="Models\ViewMa.cs" />
+    <Compile Remove="Models\ViewMasTime.cs" />
+    <Compile Remove="Models\ViewMasWeeklyPlan.cs" />
+    <Compile Remove="Models\ViewMaterialStatus.cs" />
+    <Compile Remove="Models\ViewMisc.cs" />
+    <Compile Remove="Models\ViewProductionReportTime.cs" />
+    <Compile Remove="Models\ViewQryTeamPlanning.cs" />
+    <Compile Remove="Models\ViewReportByArea.cs" />
+    <Compile Remove="Models\ViewSacamlock.cs" />
+    <Compile Remove="Models\ViewSacontrol.cs" />
+    <Compile Remove="Models\ViewSaDistBd.cs" />
+    <Compile Remove="Models\ViewSaMccbspdFitout.cs" />
+    <Compile Remove="Models\ViewSaTime.cs" />
+    <Compile Remove="Models\ViewTempTime.cs" />
+    <Compile Remove="Models\ViewTestAccTime.cs" />
+    <Compile Remove="Models\ViewTestMaxTime.cs" />
+    <Compile Remove="Models\ViewTotalPanelInfoTime.cs" />
+    <Compile Remove="Models\ViewTransactionActivity.cs" />
+    <Compile Remove="Models\ViewTransactionsDistinct.cs" />
+    <Compile Remove="Models\ViewUnionArea.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="efpt.config.json.user" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />

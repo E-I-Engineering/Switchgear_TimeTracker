@@ -1,69 +1,97 @@
-﻿@model ProjectLogViewModel
+﻿@model TaskLogsViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
-    ViewData["Title"] = "Project Work Logger";
+    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
+    string errorText = Convert.ToString(TempData["ErrorText"]);
+    ViewData["Title"] = "Time Logger";
 }
+
 <section>
-    @if (@Model != null)
-    {
-        <h2>Project: @Model.SelectedProject.ProjectNo</h2>
-    }
-    else
-    {
-        <h2>No Project Selected</h2>
-    }
-    <a href="/LogTime/SelectProject">Change Project</a>
+    <h2>Project: @Model?.SelectedTask?.Pannel?.Project?.ProjectNo</h2>
+    <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
+    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3>
+    <a href="/LogTime/SelectTask">Change Task</a>
 </section>
 
-@if (Model != null)
-{
-    if (Model.SelectedProject == null)
-    {
-        <h2>no data available</h2>
-    }
+
+@{
     // filter time stamps for ones currently running
-    var workingUsers = @Model.LaborTimeStamps.Where(timeStamp => timeStamp.ClockOut == null);
-    <form method='post' action="/LogTime/ClockUserInOut">
-        @Html.AntiForgeryToken()
-        <h2>Clock in/out</h2>
-        <input name="userClock" id="userClock" type="text" autofocus class='form-control input-sm' onchange="this.form.submit()" min=1 />
-        <input name="projectClock"
-        id="projectClock"
-        type="text"
-        style="display:none"
-        value=@Model.SelectedProject.Id />
+    var workingUsers = @Model?.LaborTimeStamps?.Where(timeStamp => timeStamp.ClockOut == null);
+}       
+<form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
+    @Html.AntiForgeryToken()
+    <h2>Clock in/out</h2>
+    <select id="userID" name="userID">
+        @foreach (var user in Model.SimpleAllWorkers)
+        {
+            <option data-tagno="@user.TagNo" value="@user.Id">
+                @user.Name
+            </option>
+        }
+    </select>
+    <button type="submit">clock</button>
+    <label for="userTag">Scan user</label>
+        <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
+        <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     </form>
-    if (TempData["AlertMessage"] != null)
+    @if (!string.IsNullOrEmpty(alertMessage))
     {
         <div class="alert @alertType">
-            <strong>@Html.Raw(TempData["AlertMessage"])</strong>
-            @if (TempData["ErrorText"] != null)
+        <strong>@Html.Raw(alertMessage)</strong>
+        @if (!string.IsNullOrEmpty(errorText))
             {                
                 <br />
                 <br />
-                <p>Error: @TempData["ErrorText"]</p>
+            <p>Error: @errorText</p>
             }
         </div>
     }
     <section>
         <dl>
-            <dt>Hours worked</dt>
-            <dd>@Model.HoursWorked</dd>
+            <dt>Project Hours worked</dt>
+            <dd>@Model.HoursWorked["project"]</dd>
+
+            <dt>Task Hours worked</dt>
+            <dd>@Model.HoursWorked["task"]</dd>
 
             <dt>Hours Required</dt>
             <dd>To be added</dd>
 
-            <dt>Employees working</dt>
-            <dd>@workingUsers.Count()</dd>
+             <dt>Employees working</dt> 
+             <dd>@workingUsers.Count()</dd> 
         </dl>
         <ul>
-            @foreach (var timeStamp in workingUsers)
-            {
-                string userName = timeStamp.User?.FullName ?? "Unknown User";
-                <li>
-                    @userName
-                </li>
-            }
+             @foreach (var timeStamp in workingUsers) 
+             { 
+                 string userName = timeStamp.User?.FullName ?? "Unknown User"; 
+                 <li> 
+                     @userName 
+                 </li> 
+             }
         </ul>
     </section>
-}
+
+<script>
+
+         document.addEventListener("DOMContentLoaded", () => {
+            // Takes rfid tag number and converts it to matching user ID before form submission
+            const form = document.getElementById("clockInOutForm");
+            const userSelectIDInputElement = document.getElementById("userID");
+            const userOptions = Array.from(userSelectIDInputElement.options);
+            const userScanElement = document.getElementById("userTag");
+            userScanElement.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    const userTagNo = event.target.value.trim();
+                    const matchedOption = userOptions.find(option => option.dataset.tagno === userTagNo);
+                    if (!matchedOption) {
+                        alert("No user with that tag.");
+                        userScanElement.value = "";
+                        return;
+                    }
+                    matchedOption.selected = true;
+                    form.submit();
+                }
+            })
+         });
+</script> 
