@@ -8,5 +8,14 @@ namespace Switchgear_TimeTracker.Controllers
         {
             return View();
         }
+
+        public IActionResult AssignTags()
+        {
+            return View("AssignTags");
+        }
+        public IActionResult ViewEmployees()
+        {
+            return View("ViewEmployees");
+        }
     }
 }
