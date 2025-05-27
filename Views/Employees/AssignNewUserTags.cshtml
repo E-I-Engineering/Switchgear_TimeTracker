@@ -1,0 +1,31 @@
+﻿@{
+    string alertType = Convert.ToString(TempData["AlertType"]);
+    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
+    string errorText = Convert.ToString(TempData["ErrorText"]);
+    ViewData["Title"] = "Assign New User a Tag";
+}
+<h1>@ViewData["Title"]</h1>
+<form id="assignNewTagForm" method="post" action="/Employees/AssignNewUserTagNumber">
+    @Html.AntiForgeryToken()
+    <label for="userFullName">Full Name:</label>
+    <input name="userFullName" id="userFullName" type="text" required/><br />
+    <label for="userClockNumber">Clock Number:</label>
+    <input name="userClockNumber" id="userClockNumber" type="number" required/><br />
+    <label for="userEmail">Email:</label>
+    <input name="userEmail" id="userEmail" type="email" required/><br />
+    <label for="tagNoInput">Scan Tag:</label>
+    <input name="tagNoInput" id="tagNoInput" type="number" required/><br />
+    <button>Assign</button>
+</form>
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert @alertType">
+        <strong>@Html.Raw(alertMessage)</strong>
+        @if (!string.IsNullOrEmpty(errorText))
+        {
+            <br />
+            <br />
+            <p>Error: @errorText</p>
+        }
+    </div>
+}
