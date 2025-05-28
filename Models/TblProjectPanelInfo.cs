@@ -46,6 +46,9 @@ public partial class TblProjectPanelInfo
     [InverseProperty("TblProjectPanelInfos")]
     public virtual TblProject Project { get; set; }
 
+    [InverseProperty("Panel")]
+    public virtual ICollection<TblBackplate> TblBackplates { get; set; } = new List<TblBackplate>();
+
     [InverseProperty("Pannel")]
     public virtual ICollection<TblTemplatePlanningPanelInfo> TblTemplatePlanningPanelInfos { get; set; } = new List<TblTemplatePlanningPanelInfo>();
 }

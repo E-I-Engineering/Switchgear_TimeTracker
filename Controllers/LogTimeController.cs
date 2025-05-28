@@ -140,7 +140,8 @@ namespace Switchgear_TimeTracker.Controllers
                 .Where(timestamp => timestamp.ClockOut != null)
                 .Select(timestamp => timestamp.User)
                 .ToList();
-
+            //All backplates for this panel
+            //var backplates = 
             var viewModel = new TaskLogsViewModel
             {
                 SelectedTask = selectedTask,

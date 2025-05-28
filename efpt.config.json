@@ -15,6 +15,10 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[tbl_Backplates]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl_Employees]",
          "ObjectType": 0
       },

@@ -27,6 +27,13 @@ public partial class TblLaborTimeStamp
     [Column(TypeName = "datetime")]
     public DateTime? ClockOut { get; set; }
 
+    [Column("BackplateID")]
+    public int? BackplateId { get; set; }
+
+    [ForeignKey("BackplateId")]
+    [InverseProperty("TblLaborTimeStamps")]
+    public virtual TblBackplate Backplate { get; set; }
+
     [ForeignKey("TaskId")]
     [InverseProperty("TblLaborTimeStamps")]
     public virtual TblTemplatePlanningPanelInfo Task { get; set; }
