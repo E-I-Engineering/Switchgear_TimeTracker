@@ -79,6 +79,7 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel)
                 .Include(t => t.Pannel.Project)
                 .Include(t => t.Action)
+                .Include(t => t.Area)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
             if (selectedTask == null)
