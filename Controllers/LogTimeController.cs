@@ -21,8 +21,25 @@ namespace Switchgear_TimeTracker.Controllers
 
         public async Task<IActionResult> SelectTask()
         {
-            var project = await _context.TblProjects.ToListAsync();
-            return View(project);
+            var projects = await _context.TblProjects.ToListAsync();
+            return View(projects);
+        }
+        public IActionResult SelectBackplate(int? panelID)
+        {
+            if (panelID == null)
+            {
+                return BadRequest("Panel ID is missing");
+            }
+            //var project = await _context.TblProjects.ToListAsync();
+            var selectedPanel = _context.TblProjectPanelInfos.Single(pan => pan.Id == panelID);
+            if (selectedPanel == null)
+            {
+                return NotFound("Panel not found.");
+            }
+            // ? get options for backplates
+            var backplateOptions = selectedPanel.Backplates.ToList();
+
+            return View(backplateOptions);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -68,7 +85,7 @@ namespace Switchgear_TimeTracker.Controllers
             }
             return RedirectToAction("Index", new { taskID = taskClockInput });
         }
-        public async Task<IActionResult> Index(int? taskID)
+        public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
             // If task is not selected, redirect to select task page
             if (taskID == null) 
@@ -80,14 +97,20 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel.Project)
                 .Include(t => t.Action)
                 .Include(t => t.Area)
+                .Include(t => t.Pannel.Backplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
-
+            
             if (selectedTask == null)
             {
                 TempData["AlertMessage"] = "Task Id not found";
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = "Invalid task ID scanned";
                 return RedirectToAction("SelectTask");
+            }
+            // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
+            if (selectedTask?.AreaId == 6 && backplateID == null)
+            {
+                return RedirectToAction("SelectBackplate", new {panelID = selectedTask.PannelId});
             }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
@@ -100,7 +123,7 @@ namespace Switchgear_TimeTracker.Controllers
 
             var hoursWorked = new Dictionary<string, double>();
             // Calculate logged time for this project
-            var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut != null);
+            var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue);
             hoursWorked.Add("project", 0.0);
             foreach (var laborTimeStamp in projectClosedTimeStamps)
             {
@@ -140,8 +163,6 @@ namespace Switchgear_TimeTracker.Controllers
                 .Where(timestamp => timestamp.ClockOut != null)
                 .Select(timestamp => timestamp.User)
                 .ToList();
-            //All backplates for this panel
-            //var backplates = 
             var viewModel = new TaskLogsViewModel
             {
                 SelectedTask = selectedTask,

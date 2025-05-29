@@ -24,8 +24,9 @@ public partial class TblBackplate
     public short? Position { get; set; }
 
     [ForeignKey("PanelId")]
-    [InverseProperty("TblBackplates")]
+    [InverseProperty("Backplates")]
     public virtual TblProjectPanelInfo Panel { get; set; }
+
 
     [InverseProperty("Backplate")]
     public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
