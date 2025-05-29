@@ -31,15 +31,13 @@ namespace Switchgear_TimeTracker.Controllers
                 return BadRequest("Panel ID is missing");
             }
             //var project = await _context.TblProjects.ToListAsync();
-            var selectedPanel = _context.TblProjectPanelInfos.Single(pan => pan.Id == panelID);
+            var selectedPanel = _context.TblProjectPanelInfos.Include(b => b.Backplates).Single(pan => (int)pan.Id == (int)panelID);
             if (selectedPanel == null)
             {
                 return NotFound("Panel not found.");
             }
-            // ? get options for backplates
-            var backplateOptions = selectedPanel.Backplates.ToList();
 
-            return View(backplateOptions);
+            return View(selectedPanel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

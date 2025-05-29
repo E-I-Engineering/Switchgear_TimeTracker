@@ -1,11 +1,15 @@
-﻿@model List<Switchgear_TimeTracker.Models.TblBackplate>
+﻿@model Switchgear_TimeTracker.Models.TblProjectPanelInfo
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
-<h1>Select backin' da' plate</h1>
-@foreach (var op in @Model)
-{
-    <p>@op.Id</p>
-}
+<h1>Select backplate</h1>
+ @if (Model == null || Model.Backplates.Count == 0) 
+ { 
+     <p>No backplates have been created for this panel. Contact the app maintainer to create backplates for this panel.</p> 
+} 
+ @foreach (var backplate in @Model.Backplates) 
+ { 
+     <p>@backplate.Id</p> 
+ }
