@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Switchgear_TimeTracker.Data;
 using Switchgear_TimeTracker.Models;
 
@@ -34,6 +35,9 @@ namespace Switchgear_TimeTracker.Controllers
             var selectedTask = _context.TblTemplatePlanningPanelInfos
                 .Include(b => b.Pannel)
                 .Include(b => b.Pannel.Backplates)
+                .Include(b => b.Pannel.Project)
+                .Include(b => b.Area)
+                .Include(b => b.Action)
                 .Single(task => task.Id == taskID);
             if (selectedTask == null)
             {
@@ -73,7 +77,7 @@ namespace Switchgear_TimeTracker.Controllers
                 string alertType = "Failure";
                 TempData["AlertType"] = alertType;
                 if (ex.Message.IndexOf("FOREIGN KEY constraint") >= 0)
-                    // User scanned/typed a user id that is not in the database. SQL Server restraints prevent insertion. Instruct user to have missing user added to db
+                // User scanned/typed a user id that is not in the database. SQL Server restraints prevent insertion. Instruct user to have missing user added to db
                 {
                     TempData["AlertMessage"] = alertType + ": User does not exist in database. Please add user.";
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
@@ -89,10 +93,10 @@ namespace Switchgear_TimeTracker.Controllers
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
             // If task is not selected, redirect to select task page
-            if (taskID == null) 
+            if (taskID == null)
             {
                 return RedirectToAction("SelectTask");
-            }            
+            }
             var selectedTask = await _context.TblTemplatePlanningPanelInfos
                 .Include(t => t.Pannel)
                 .Include(t => t.Pannel.Project)
@@ -100,7 +104,7 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Area)
                 .Include(t => t.Pannel.Backplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
-            
+
             if (selectedTask == null)
             {
                 TempData["AlertMessage"] = "Task Id not found";
@@ -111,75 +115,85 @@ namespace Switchgear_TimeTracker.Controllers
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
             if (selectedTask?.AreaId == 6 && backplateID == null)
             {
-                return RedirectToAction("SelectBackplate", new {taskID = taskID});
+                return RedirectToAction("SelectBackplate", new { taskID = taskID });
+            }
+
+            TblBackplate selectedBackplate;
+            try
+            {
+                selectedBackplate = selectedTask?.Pannel?.Backplates?.Single(b => b.Id == backplateID);
+            }
+            catch (Exception ex)
+            {
+                selectedBackplate = null;
             }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
                     .TblLaborTimeStamps
                     .Include(t => t.User)
                     .Include(t => t.Task)
-                    //.Include(t => t.Task)
                     .Where(timeStamp => timeStamp.Task.Pannel.Project.Id == selectedTask.ProjectId)
                     .ToListAsync();
 
-            var hoursWorked = new Dictionary<string, double>();
-            // Calculate logged time for this project
-            var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue);
-            hoursWorked.Add("project", 0.0);
-            foreach (var laborTimeStamp in projectClosedTimeStamps)
-            {
-                var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
-                var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
-                var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
-                hoursWorked["project"] += timeStampClockedMilliseconds.TotalHours;
-            }
-            // Filter timestamps for selected task only
-            var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
-            // Calculate logged time for this Task on this project
-            var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null);
-            hoursWorked.Add("task", 0.0);
-            foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
-            {
-                var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
-                var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
-                var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
-                hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
-            }
-            // Round total results to 2 decimal places
-            hoursWorked["project"] = Math.Round(hoursWorked["project"], 2);
-            hoursWorked["task"] = Math.Round(hoursWorked["task"], 2);
-
-            // All workers
-            var allWorkers = await _context
-                .TblEmployees
-                .Select(employee => new SimpleEmployee
+                var hoursWorked = new Dictionary<string, double>();
+                // Calculate logged time for this project
+                var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue);
+                hoursWorked.Add("project", 0.0);
+                foreach (var laborTimeStamp in projectClosedTimeStamps)
                 {
-                    Id = employee.Id,
-                    TagNo = employee.TagNo,
-                    Name = employee.FullName
-                })
-                .ToListAsync();
-            //All workers clocked into this task
-           var workingUsers = taskLaborTimeStamps
-                .Where(timestamp => timestamp.ClockOut != null)
-                .Select(timestamp => timestamp.User)
-                .ToList();
-            var viewModel = new TaskLogsViewModel
-            {
-                SelectedTask = selectedTask,
-                LaborTimeStamps = taskLaborTimeStamps,
-                HoursWorked = hoursWorked,
-                SimpleAllWorkers = allWorkers
-            };
-            return View(viewModel);
+                    var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
+                    var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
+                    var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
+                    hoursWorked["project"] += timeStampClockedMilliseconds.TotalHours;
+                }
+                // Filter timestamps for selected task only
+                var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
+                // Calculate logged time for this Task on this project
+                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null);
+                hoursWorked.Add("task", 0.0);
+                foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
+                {
+                    var timeStampStartTime = (DateTime)laborTimeStamp.ClockIn;
+                    var timeStampStopTime = (DateTime)laborTimeStamp.ClockOut;
+                    var timeStampClockedMilliseconds = timeStampStopTime - timeStampStartTime;
+                    hoursWorked["task"] += timeStampClockedMilliseconds.TotalHours;
+                }
+                // Round total results to 2 decimal places
+                hoursWorked["project"] = Math.Round(hoursWorked["project"], 2);
+                hoursWorked["task"] = Math.Round(hoursWorked["task"], 2);
+
+                // All workers
+                var allWorkers = await _context
+                    .TblEmployees
+                    .Select(employee => new SimpleEmployee
+                    {
+                        Id = employee.Id,
+                        TagNo = employee.TagNo,
+                        Name = employee.FullName
+                    })
+                    .ToListAsync();
+                //All workers clocked into this task
+                var workingUsers = taskLaborTimeStamps
+                     .Where(timestamp => timestamp.ClockOut != null)
+                     .Select(timestamp => timestamp.User)
+                     .ToList();
+                var viewModel = new TaskLogsViewModel
+                {
+                    SelectedTask = selectedTask,
+                    LaborTimeStamps = taskLaborTimeStamps,
+                    HoursWorked = hoursWorked,
+                    SimpleAllWorkers = allWorkers,
+                    BackplateSelect = selectedBackplate
+                };
+                return View(viewModel);
+            }
+
+
+
+
+
+
+
+
         }
-
-
-
-
-
-
-
-
     }
-}

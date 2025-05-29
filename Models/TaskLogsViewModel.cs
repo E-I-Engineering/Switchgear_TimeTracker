@@ -13,5 +13,9 @@
 
         // Property to hold list of all users for matching tagno to user ID
         public IEnumerable<SimpleEmployee> SimpleAllWorkers { get; set; }
+
+        // Backplate scanning time for, if applicable
+
+        public TblBackplate? BackplateSelect { get; set; }
     }
 }

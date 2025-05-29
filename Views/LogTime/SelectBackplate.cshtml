@@ -8,8 +8,34 @@
      <p>No backplates have been created for this panel. Contact the app maintainer to create backplates for this panel.</p> 
 } 
 <div class="text-center">
- @foreach (var backplate in @Model.Pannel.Backplates) 
- { 
-     <p>@backplate.Id</p> 
- }
+    <section>
+        <h2>Project: @Model?.Pannel?.Project?.ProjectNo</h2>
+        <h2>Panel: @Model?.Pannel?.PanelNumber</h2>
+        <h3>Area: @Model?.Area?.Name</h3>
+        <h3>Task: @Model?.Action?.Name</h3>
+
+        <a href="/LogTime/SelectTask">Change Task</a>
+    </section>
+    <br />
+    <h3>Scan Backplate Code</h3>
+    <input type="text" id="scanBarcodeID" autofocus />
+    <div class="selectBackplate--bpButtons">
+         @foreach (var backplate in @Model.Pannel.Backplates) 
+         {
+             <button onclick="scanBackplate( @backplate.Id )">@backplate.Section @backplate.Position</button> 
+         }
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        function scanBackplate(backplateIDClicked = null) {
+            const taskID = @Model.Id
+            const scannedBackplateID = typeof backplateIDClicked === "number" ? backplateIDClicked : this.value;
+            console.log("ID: ", scannedBackplateID)
+            
+            window.location.href = `/LogTime/Index?taskID=${taskID}&backplateID=${scannedBackplateID}`;
+        }
+        document.getElementById("scanBarcodeID").addEventListener("change", scanBackplate);
+    </script>
+}
