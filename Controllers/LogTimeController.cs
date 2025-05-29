@@ -24,20 +24,23 @@ namespace Switchgear_TimeTracker.Controllers
             var projects = await _context.TblProjects.ToListAsync();
             return View(projects);
         }
-        public IActionResult SelectBackplate(int? panelID)
+        public IActionResult SelectBackplate(int? taskID)
         {
-            if (panelID == null)
+            if (taskID == null)
             {
-                return BadRequest("Panel ID is missing");
+                return BadRequest("Task ID is missing");
             }
             //var project = await _context.TblProjects.ToListAsync();
-            var selectedPanel = _context.TblProjectPanelInfos.Include(b => b.Backplates).Single(pan => (int)pan.Id == (int)panelID);
-            if (selectedPanel == null)
+            var selectedTask = _context.TblTemplatePlanningPanelInfos
+                .Include(b => b.Pannel)
+                .Include(b => b.Pannel.Backplates)
+                .Single(task => task.Id == taskID);
+            if (selectedTask == null)
             {
                 return NotFound("Panel not found.");
             }
 
-            return View(selectedPanel);
+            return View(selectedTask);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -108,7 +111,7 @@ namespace Switchgear_TimeTracker.Controllers
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
             if (selectedTask?.AreaId == 6 && backplateID == null)
             {
-                return RedirectToAction("SelectBackplate", new {panelID = selectedTask.PannelId});
+                return RedirectToAction("SelectBackplate", new {taskID = taskID});
             }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
