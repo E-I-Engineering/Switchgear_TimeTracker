@@ -20,7 +20,7 @@ namespace Switchgear_TimeTracker.Controllers
             return View();
         }
 
-        public IActionResult AssignTags()
+        public IActionResult AssignNewUserTags()
         {
             return View("AssignNewUserTags");
         }
@@ -37,7 +37,7 @@ namespace Switchgear_TimeTracker.Controllers
                 await _context.Database.ExecuteSqlRawAsync($"EXECUTE dbo.spAddEmployeeUserClockTag @FullName, @Email, @TagNo, @ClockNumber ",
                    new SqlParameter("@FullName", form["userFullName"].ToString()),
                    new SqlParameter("@Email", form["userEmail"].ToString()),
-                   new SqlParameter("@TagNo", int.Parse(form["tagNoInput"])),
+                   new SqlParameter("@TagNo", long.Parse(form["tagNoInput"])),
                    new SqlParameter("@ClockNumber", int.Parse(form["userClockNumber"]))
                 );
                 TempData["AlertType"] = "Success";
