@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Switchgear_TimeTracker.Models;
 
 [Table("tbl_Employees")]
+[Index("Email", Name = "email_unique", IsUnique = true)]
+[Index("Email", Name = "unique_email", IsUnique = true)]
+[Index("TagNo", Name = "unique_tag", IsUnique = true)]
 public partial class TblEmployee
 {
     [Key]

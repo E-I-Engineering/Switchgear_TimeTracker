@@ -27,7 +27,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{taskID?}")
+    pattern: "{controller=Home}/{action=Index}/{taskID?}/{backplateID?}")
     .WithStaticAssets();
 
 
