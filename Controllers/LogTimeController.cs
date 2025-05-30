@@ -51,6 +51,7 @@ namespace Switchgear_TimeTracker.Controllers
         public async Task<IActionResult> ClockUserInOut(IFormCollection form)
         {
             var taskClockInput = form["taskClock"].ToString();
+            var backplateInput = form["backplateIDInput"].ToString();
             try
             {
                 var userClockInput = form["userID"].ToString();
@@ -60,6 +61,7 @@ namespace Switchgear_TimeTracker.Controllers
                 }
                 var clockUserID = new SqlParameter("@clockUserID", userClockInput);
                 var clockTaskID = new SqlParameter("@clockTaskID", taskClockInput);
+                var clockBackplateID = new SqlParameter("@clockBackplateID", backplateInput);
                 // create output parameter for stored procedure
                 var resultMessage = new SqlParameter
                 {
@@ -68,7 +70,7 @@ namespace Switchgear_TimeTracker.Controllers
                     Size = 1000,
                     Direction = System.Data.ParameterDirection.Output
                 };
-                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @resultMessage OUTPUT", clockUserID, clockTaskID, resultMessage);
+                await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @clockBackplateID, @resultMessage OUTPUT", clockUserID, clockTaskID, clockBackplateID, resultMessage);
                 TempData["AlertMessage"] = resultMessage.Value;
                 TempData["AlertType"] = "Success";
             }
@@ -88,7 +90,10 @@ namespace Switchgear_TimeTracker.Controllers
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
                 }
             }
-            return RedirectToAction("Index", new { taskID = taskClockInput });
+            if ( !string.IsNullOrEmpty(backplateInput) && int.TryParse(backplateInput, out int backplateID) ) {
+                return RedirectToAction("Index", new { taskID = taskClockInput, backplateID });
+            }
+            return RedirectToAction("Index", new { taskID = taskClockInput, backplateInput = (int?)null });
         }
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {

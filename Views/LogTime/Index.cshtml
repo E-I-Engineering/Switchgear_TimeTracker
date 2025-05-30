@@ -11,8 +11,14 @@
     <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
     <h3>Area: @Model?.SelectedTask?.Area?.Name</h3>
     <h3>Task: @Model?.SelectedTask?.Action?.Name</h3>
-
     <a href="/LogTime/SelectTask">Change Task</a>
+    <br /><br />
+    @if (Model?.BackplateSelect != null)
+    {
+        <h4>Backplate: @Model.BackplateSelect.Section@Model.BackplateSelect.Position</h4>
+        <a href="/LogTime/SelectBackplate?taskID=@Model.SelectedTask.Id">Change Backplate</a>
+        <br /><br />
+    }
 </section>
 
 
@@ -36,6 +42,7 @@
     <label for="userTag">Scan user:</label>
     <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
     <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
+    <input name="backplateIDInput" id="backplateIDInput" type="hidden" value="@Model?.BackplateSelect?.Id" />
     </form>
     @if (!string.IsNullOrEmpty(alertMessage))
     {
@@ -77,7 +84,6 @@
 <script>
 
          document.addEventListener("DOMContentLoaded", () => {
-            console.log(@Model?.SelectedTask);
             // Takes rfid tag number and converts it to matching user ID before form submission
             const form = document.getElementById("clockInOutForm");
             const userSelectIDInputElement = document.getElementById("userID");
@@ -93,7 +99,7 @@
                         userScanElement.value = "";
                         return;
                     }
-                    matchedOption.selected = true;
+                    matchedOption.selected = true;                    
                     form.submit();
                 }
             })
