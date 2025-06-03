@@ -118,7 +118,7 @@ namespace Switchgear_TimeTracker.Controllers
                 return RedirectToAction("SelectTask");
             }
             // Does selected backplate exist on selected panel
-            if (!selectedTask.Pannel.Backplates.ToList().Select(bp => bp.Id).ToList().Contains((int)backplateID))
+            if (backplateID != null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
             {
                 TempData["AlertMessage"] = "Backplate does not exist on selected panel.";
                 TempData["AlertType"] = "Failure";
