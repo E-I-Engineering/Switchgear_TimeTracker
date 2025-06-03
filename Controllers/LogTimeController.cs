@@ -110,12 +110,20 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel.Backplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
-            if (selectedTask == null)
+            if (selectedTask == null || selectedTask?.Pannel == null)
             {
                 TempData["AlertMessage"] = "Task Id not found";
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = "Invalid task ID scanned";
                 return RedirectToAction("SelectTask");
+            }
+            // Does selected backplate exist on selected panel
+            if (!selectedTask.Pannel.Backplates.ToList().Select(bp => bp.Id).ToList().Contains((int)backplateID))
+            {
+                TempData["AlertMessage"] = "Backplate does not exist on selected panel.";
+                TempData["AlertType"] = "Failure";
+                TempData["ErrorText"] = "Panel/Backplate mismatch";
+                return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
             if (selectedTask?.AreaId == 6 && backplateID == null)
