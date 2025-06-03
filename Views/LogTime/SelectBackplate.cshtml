@@ -25,6 +25,18 @@
              <button onclick="scanBackplate( @backplate.Id )">@backplate.Section @backplate.Position</button> 
          }
     </div>
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="alert @alertType">
+            <strong>@Html.Raw(TempData["AlertMessage"])</strong>
+            @if (TempData["ErrorText"] != null)
+            {
+                <br />
+                <br />
+                <p>Error: @TempData["ErrorText"]</p>
+            }
+        </div>
+    }
 </div>
 
 @section Scripts {
