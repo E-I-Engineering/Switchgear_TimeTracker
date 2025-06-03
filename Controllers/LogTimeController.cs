@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Data;
+using System.Threading.Tasks;
 using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,7 @@ namespace Switchgear_TimeTracker.Controllers
         public async Task<IActionResult> ClockUserInOut(IFormCollection form)
         {
             var taskClockInput = form["taskClock"].ToString();
-            var backplateInput = form["backplateIDInput"].ToString();
+            var backplateInput = form["backplateIDInput"];
             try
             {
                 var userClockInput = form["userID"].ToString();
@@ -61,15 +62,23 @@ namespace Switchgear_TimeTracker.Controllers
                 }
                 var clockUserID = new SqlParameter("@clockUserID", userClockInput);
                 var clockTaskID = new SqlParameter("@clockTaskID", taskClockInput);
-                var clockBackplateID = new SqlParameter("@clockBackplateID", backplateInput);
-                // create output parameter for stored procedure
-                var resultMessage = new SqlParameter
+                var clockBackplateID = new SqlParameter("@clockBackplateID", SqlDbType.Int );
+                if (int.TryParse(backplateInput, out int parsedBackplateID))
                 {
-                    ParameterName = "@resultMessage",
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                    Size = 1000,
-                    Direction = System.Data.ParameterDirection.Output
-                };
+                    clockBackplateID.Value = parsedBackplateID;
+                }
+                else
+                {
+                    clockBackplateID.Value = DBNull.Value;
+                }
+                    // create output parameter for stored procedure
+                    var resultMessage = new SqlParameter
+                    {
+                        ParameterName = "@resultMessage",
+                        SqlDbType = System.Data.SqlDbType.VarChar,
+                        Size = 1000,
+                        Direction = System.Data.ParameterDirection.Output
+                    };
                 await _context.Database.ExecuteSqlRawAsync("EXECUTE dbo.spClockUserInOut @clockUserID, @clockTaskID, @clockBackplateID, @resultMessage OUTPUT", clockUserID, clockTaskID, clockBackplateID, resultMessage);
                 TempData["AlertMessage"] = resultMessage.Value;
                 TempData["AlertType"] = "Success";
@@ -81,7 +90,7 @@ namespace Switchgear_TimeTracker.Controllers
                 if (ex.Message.IndexOf("FOREIGN KEY constraint") >= 0)
                 // User scanned/typed a user id that is not in the database. SQL Server restraints prevent insertion. Instruct user to have missing user added to db
                 {
-                    TempData["AlertMessage"] = alertType + ": User does not exist in database. Please add user.";
+                    TempData["AlertMessage"] = alertType + ": Database error. Please send image to maintainer of app";
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
                 }
                 else
