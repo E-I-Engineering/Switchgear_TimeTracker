@@ -13,12 +13,12 @@ public partial class TblDowntimeReason
 {
     [Key]
     [Column("ID")]
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     [StringLength(75)]
     [Unicode(false)]
-    public string Text { get; set; }
+    public required string Text { get; set; }
 
-    [InverseProperty("DowntimeReasonNavigation")]
+    [InverseProperty("DowntimeReason")]
     public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
 }

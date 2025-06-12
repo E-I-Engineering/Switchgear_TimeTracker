@@ -4,6 +4,7 @@
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
     string errorText = Convert.ToString(TempData["ErrorText"]);
     double percentTaskComplete = Model.HoursWorked["task"] / (double)Model?.SelectedTask?.Time * 100;
+    var workingUsers = Model.Workers["clockedIn"];
     ViewData["Title"] = "Time Logger";
 }
 
@@ -23,11 +24,7 @@
     }
 </section>
 
-
-@{
-    // filter time stamps for ones currently running
-    var workingUsers = @Model?.LaborTimeStamps?.Where(timeStamp => timeStamp.ClockOut == null);
-}       
+     
 <form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
     @Html.AntiForgeryToken()
     <h2>Clock in/out</h2>
@@ -64,31 +61,36 @@
         <dd>@Model.HoursWorked["project"]</dd>
 
         <dt>Employees working</dt> 
-        <dd>@workingUsers.Count()</dd> 
+        <dd>@workingUsers.Count()</dd>
     </dl>
-    <ul>
-        @foreach (var timeStamp in workingUsers) 
-        { 
-            string userName = timeStamp.User?.FullName ?? "Unknown User"; 
-            <li> 
-                @userName 
-            </li> 
-        }
-    </ul>
-    <h2>Down Workers</h2>
-    <ul>
+    @* <ul> *@
+    @*     @foreach (var timeStamp in workingUsers)  *@
+    @*     {  *@
+    @*         string userName = timeStamp?.Name ?? "Unknown User";  *@
+    @*         <li>  *@
+    @*             @userName  *@
+    @*         </li>  *@
+    @*     } *@
+    @* </ul> *@
+    <table>
+        <caption>Down Workers</caption>
+        <tr>
+            <th>Emp</th>
+            <th>Reason</th>
+        </tr>
         @foreach (var worker in Model.Workers["downUsers"])
         {
-            <li>@worker.Name</li>
+			<tr>
+                <td>@worker.Name</td>
+                <td>@worker.ReasonDown</td>
+            </tr>
         }
-    </ul>
+    </table>
     </section>
 
 <script>
 
          document.addEventListener("DOMContentLoaded", () => {
-             // Constants
-            const DOWN_TIME_PROJECT_NUMBER = 1456
             // Takes rfid tag number and converts it to matching user ID before form submission
             const form = document.getElementById("clockInOutForm");
             const userSelectIDInputElement = document.getElementById("userID");

@@ -107,7 +107,7 @@ namespace Switchgear_TimeTracker.Controllers
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
             // Constants
-            int DOWN_TIME_PROJECT_NUMBER = 1456;
+            int DOWN_TIME_ACTION_ID = 19;
             // If task is not selected, redirect to select task page
             if (taskID is null)
             {
@@ -156,6 +156,7 @@ namespace Switchgear_TimeTracker.Controllers
                     .TblLaborTimeStamps
                     .Include(t => t.User)
                     .Include(t => t.Task)
+                    .Include(t => t.DowntimeReason)
                     .Where(timeStamp => timeStamp.Task.Pannel.Id == selectedTask.Pannel.Id)
                     .ToListAsync();
 
@@ -198,7 +199,7 @@ namespace Switchgear_TimeTracker.Controllers
                     .ToListAsync();
                 //All workers clocked into this task
                 var workingUsers = taskLaborTimeStamps
-                     .Where(timestamp => timestamp.ClockOut is null)
+                     .Where(timestamp => timestamp.ClockOut is null && timestamp.DowntimeReason is null)
                      .Select(timestamp => new SimpleEmployee
                      {
                          Id= timestamp.User.Id,
@@ -207,12 +208,13 @@ namespace Switchgear_TimeTracker.Controllers
                      })
                      .ToList();
                 var downTimeUsers = taskLaborTimeStamps
-                    .Where(timestamp => timestamp.Task.Pannel.Project.Id == DOWN_TIME_PROJECT_NUMBER)
+                    .Where(timestamp => timestamp.ClockOut is null && timestamp.DowntimeReason is not null)
                     .Select(timestamp => new SimpleEmployee
                     {
                         Id = timestamp.User.Id,
                         TagNo= timestamp.User.TagNo,
-                        Name = timestamp.User.FullName
+                        Name = timestamp.User.FullName,
+                        ReasonDown = timestamp.DowntimeReason?.Text ?? "[No reason stored]"
                     })
                     .ToList();
 
