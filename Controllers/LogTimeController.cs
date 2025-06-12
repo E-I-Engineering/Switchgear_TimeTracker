@@ -106,8 +106,10 @@ namespace Switchgear_TimeTracker.Controllers
         }
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
+            // Constants
+            int DOWN_TIME_PROJECT_NUMBER = 1456;
             // If task is not selected, redirect to select task page
-            if (taskID == null)
+            if (taskID is null)
             {
                 return RedirectToAction("SelectTask");
             }
@@ -119,15 +121,24 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel.Backplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
-            if (selectedTask == null || selectedTask?.Pannel == null)
+            if (selectedTask is null || selectedTask?.Pannel is null)
             {
                 TempData["AlertMessage"] = "Task Id not found";
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = "Invalid task ID scanned";
                 return RedirectToAction("SelectTask");
             }
+            TblBackplate selectedBackplate;
+            try
+            {
+                selectedBackplate = selectedTask.Pannel.Backplates.Single(b => b.Id == backplateID);
+            }
+            catch (Exception ex)
+            {
+                selectedBackplate = null;
+            }
             // Does selected backplate exist on selected panel
-            if (backplateID != null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
+            if (backplateID is not null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
             {
                 TempData["AlertMessage"] = "Backplate does not exist on selected panel.";
                 TempData["AlertType"] = "Failure";
@@ -135,26 +146,17 @@ namespace Switchgear_TimeTracker.Controllers
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
-            if (selectedTask?.AreaId == 6 && backplateID == null)
+            if (selectedTask?.AreaId == 6 && backplateID is null)
             {
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
 
-            TblBackplate selectedBackplate;
-            try
-            {
-                selectedBackplate = selectedTask?.Pannel?.Backplates?.Single(b => b.Id == backplateID);
-            }
-            catch (Exception ex)
-            {
-                selectedBackplate = null;
-            }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
                     .TblLaborTimeStamps
                     .Include(t => t.User)
                     .Include(t => t.Task)
-                    .Where(timeStamp => timeStamp.Task.Pannel.Project.Id == selectedTask.ProjectId)
+                    .Where(timeStamp => timeStamp.Task.Pannel.Id == selectedTask.Pannel.Id)
                     .ToListAsync();
 
                 var hoursWorked = new Dictionary<string, double>();
@@ -196,15 +198,36 @@ namespace Switchgear_TimeTracker.Controllers
                     .ToListAsync();
                 //All workers clocked into this task
                 var workingUsers = taskLaborTimeStamps
-                     .Where(timestamp => timestamp.ClockOut != null)
-                     .Select(timestamp => timestamp.User)
+                     .Where(timestamp => timestamp.ClockOut is null)
+                     .Select(timestamp => new SimpleEmployee
+                     {
+                         Id= timestamp.User.Id,
+                         TagNo = timestamp.User.TagNo,
+                         Name = timestamp.User.FullName
+                     })
                      .ToList();
+                var downTimeUsers = taskLaborTimeStamps
+                    .Where(timestamp => timestamp.Task.Pannel.Project.Id == DOWN_TIME_PROJECT_NUMBER)
+                    .Select(timestamp => new SimpleEmployee
+                    {
+                        Id = timestamp.User.Id,
+                        TagNo= timestamp.User.TagNo,
+                        Name = timestamp.User.FullName
+                    })
+                    .ToList();
+
+            var workersDictionary = new Dictionary<string, IEnumerable<SimpleEmployee>>()
+            {
+                { "all", allWorkers },
+                { "clockedIn", workingUsers },
+                { "downUsers", downTimeUsers }
+            };
                 var viewModel = new TaskLogsViewModel
                 {
                     SelectedTask = selectedTask,
                     LaborTimeStamps = taskLaborTimeStamps,
                     HoursWorked = hoursWorked,
-                    SimpleAllWorkers = allWorkers,
+                    Workers = workersDictionary,
                     BackplateSelect = selectedBackplate
                 };
                 return View(viewModel);

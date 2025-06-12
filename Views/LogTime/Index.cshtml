@@ -3,6 +3,7 @@
     string alertType = Convert.ToString(TempData["AlertType"]);
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
     string errorText = Convert.ToString(TempData["ErrorText"]);
+    double percentTaskComplete = Model.HoursWorked["task"] / (double)Model?.SelectedTask?.Time * 100;
     ViewData["Title"] = "Time Logger";
 }
 
@@ -10,7 +11,8 @@
     <h2>Project: @Model?.SelectedTask?.Pannel?.Project?.ProjectNo</h2>
     <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
     <h3>Area: @Model?.SelectedTask?.Area?.Name</h3>
-    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3>
+    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3> <progress max="100" value="@percentTaskComplete">@percentTaskComplete</progress>
+    <br />
     <a href="/LogTime/SelectTask">Change Task</a>
     <br /><br />
     @if (Model?.BackplateSelect != null)
@@ -30,7 +32,7 @@
     @Html.AntiForgeryToken()
     <h2>Clock in/out</h2>
     <select id="userID" name="userID">
-        @foreach (var user in Model.SimpleAllWorkers)
+        @foreach (var user in Model.Workers["all"])
         {
             <option data-tagno="@user.TagNo" value="@user.Id">
                 @user.Name
@@ -43,47 +45,50 @@
     <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
     <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     <input name="backplateIDInput" id="backplateIDInput" type="hidden" value="@Model?.BackplateSelect?.Id" />
-    </form>
-    @if (!string.IsNullOrEmpty(alertMessage))
-    {
-        <div class="alert @alertType">
+</form>
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert @alertType">
         <strong>@Html.Raw(alertMessage)</strong>
         @if (!string.IsNullOrEmpty(errorText))
-            {                
-                <br />
-                <br />
+        {                
+            <br />
+            <br />
             <p>Error: @errorText</p>
-            }
-        </div>
-    }
-    <section>
-        <dl>
-            <dt>Project Hours worked</dt>
-            <dd>@Model.HoursWorked["project"]</dd>
+        }
+    </div>
+}
+<section>
+    <dl>
+        <dt>Project Hours worked</dt>
+        <dd>@Model.HoursWorked["project"]</dd>
 
-            <dt>Task Hours worked</dt>
-            <dd>@Model.HoursWorked["task"]</dd>
-
-            <dt>Hours Required</dt>
-            <dd>To be added</dd>
-
-             <dt>Employees working</dt> 
-             <dd>@workingUsers.Count()</dd> 
-        </dl>
-        <ul>
-             @foreach (var timeStamp in workingUsers) 
-             { 
-                 string userName = timeStamp.User?.FullName ?? "Unknown User"; 
-                 <li> 
-                     @userName 
-                 </li> 
-             }
-        </ul>
+        <dt>Employees working</dt> 
+        <dd>@workingUsers.Count()</dd> 
+    </dl>
+    <ul>
+        @foreach (var timeStamp in workingUsers) 
+        { 
+            string userName = timeStamp.User?.FullName ?? "Unknown User"; 
+            <li> 
+                @userName 
+            </li> 
+        }
+    </ul>
+    <h2>Down Workers</h2>
+    <ul>
+        @foreach (var worker in Model.Workers["downUsers"])
+        {
+            <li>@worker.Name</li>
+        }
+    </ul>
     </section>
 
 <script>
 
          document.addEventListener("DOMContentLoaded", () => {
+             // Constants
+            const DOWN_TIME_PROJECT_NUMBER = 1456
             // Takes rfid tag number and converts it to matching user ID before form submission
             const form = document.getElementById("clockInOutForm");
             const userSelectIDInputElement = document.getElementById("userID");
