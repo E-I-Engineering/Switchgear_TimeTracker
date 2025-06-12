@@ -8,26 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Switchgear_TimeTracker.Models;
 
-[Table("tbl_Backplates")]
-[Index("PanelId", "Section", "Position", Name = "unique_backplate_info", IsUnique = true)]
-public partial class TblBackplate
+[Table("tbl_downtime_Reasons")]
+public partial class TblDowntimeReason
 {
     [Key]
     [Column("ID")]
     public int Id { get; set; }
 
-    [Column("PanelID")]
-    public int? PanelId { get; set; }
+    [StringLength(75)]
+    [Unicode(false)]
+    public string Text { get; set; }
 
-    [StringLength(1)]
-    public string Section { get; set; }
-
-    public short? Position { get; set; }
-
-    [ForeignKey("PanelId")]
-    [InverseProperty("Backplates")]
-    public virtual TblProjectPanelInfo Panel { get; set; }
-
-    [InverseProperty("Backplate")]
+    [InverseProperty("DowntimeReasonNavigation")]
     public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
 }

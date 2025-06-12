@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Switchgear_TimeTracker.Models;
 
 [Table("tbl_projects")]
+[Index("ProjectNo", "DepartmentId", Name = "UQ__tbl_proj__1DE84164256BF8D7", IsUnique = true)]
 public partial class TblProject
 {
     [Column("Department_ID")]
