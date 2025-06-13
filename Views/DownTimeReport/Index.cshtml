@@ -1,0 +1,55 @@
+﻿@model DownTimeReportViewModel
+<h1>Report Down Time</h1>
+<form method="post" action="/" id="clockDownTimeForm">
+	@Html.AntiForgeryToken()
+    <label for="DTReasonID">Reason</label>
+    <select id="DTReasonID" name="DTReasonID">
+        <option value="" selected disabled>Select a reason</option>
+		@foreach (var reason in Model.DowntimeReasons)
+		{
+			<option>@reason.Text</option>
+		}
+	</select>
+	<label for="scanUserIntoDowntime">Scan User</label>
+	<input id="scanUserIntoDowntime" name="downtimeUser" type="number"/>
+    <select id="DTuserID" name="userID">
+        @foreach (var user in Model.TblEmployees)
+        {
+            <option data-tagno="@user.TagNo" value="@user.Id">
+                @user.FullName
+            </option>
+        }
+    </select>
+</form>
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+       // Takes rfid tag number and converts it to matching user ID before form submission
+       const form = document.getElementById("clockDownTimeForm");
+       const userSelectReasonIDInputElement = document.getElementById("DTReasonID");
+       const userSelectUserIDInputElement = document.getElementById("DTuserID");
+	   const userScanElement = document.getElementById("scanUserIntoDowntime");
+       const userOptions = Array.from(userSelectUserIDInputElement.options);
+
+       // EventListeners
+       userSelectReasonIDInputElement.addEventListener("change", () => userScanElement.focus());
+       userScanElement.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                const userTagNo = event.target.value.trim();
+                const matchedOption = userOptions.find(option => option.dataset.tagno === userTagNo);
+                if (!matchedOption) {
+                    alert("No user with that tag.");
+                    userScanElement.value = "";
+                    return;
+                }
+                if (userSelectReasonIDInputElement.value === "") {
+                    alert("Please select a reason downtime is occuring.");
+                    return;
+                }
+                matchedOption.selected = true;
+                form.submit();
+            }
+        })
+    });
+</script> 

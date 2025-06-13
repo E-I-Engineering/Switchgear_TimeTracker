@@ -24,6 +24,8 @@ public partial class UsSwitchgearContext : DbContext
 
     public virtual DbSet<TblProjectPanelInfo> TblProjectPanelInfos { get; set; }
 
+    public virtual DbSet<TblDowntimeReason> TblDowntimeReasons { get; set; }
+
     public virtual DbSet<TblTemplatePlanningArea> TblTemplatePlanningAreas { get; set; }
 
     public virtual DbSet<TblTemplatePlanningPanelInfo> TblTemplatePlanningPanelInfos { get; set; }

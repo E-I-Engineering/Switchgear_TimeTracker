@@ -1,4 +1,4 @@
-﻿@model TaskLogsViewModel
+﻿@model LogTimeViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
@@ -55,7 +55,9 @@
         }
     </div>
 }
+<a class="bigLinkButton"href="/DowntimeReport">Down Time</a>
 <section>
+    <h2>Current status info</h2>
     <dl>
         <dt>Project Hours worked</dt>
         <dd>@Model.HoursWorked["project"]</dd>

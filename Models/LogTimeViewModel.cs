@@ -1,6 +1,6 @@
 ﻿namespace Switchgear_TimeTracker.Models
 {
-    public class TaskLogsViewModel
+    public class LogTimeViewModel
     {
         // Property to hold the selected Task
         public TblTemplatePlanningPanelInfo SelectedTask { get; set; }

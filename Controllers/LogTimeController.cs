@@ -174,7 +174,7 @@ namespace Switchgear_TimeTracker.Controllers
                 // Filter timestamps for selected task only
                 var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
                 // Calculate logged time for this Task on this project
-                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null);
+                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null && timestamp.DowntimeReasonID is null);
                 hoursWorked.Add("task", 0.0);
                 foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
                 {
@@ -224,7 +224,7 @@ namespace Switchgear_TimeTracker.Controllers
                 { "clockedIn", workingUsers },
                 { "downUsers", downTimeUsers }
             };
-                var viewModel = new TaskLogsViewModel
+                var viewModel = new LogTimeViewModel
                 {
                     SelectedTask = selectedTask,
                     LaborTimeStamps = taskLaborTimeStamps,
