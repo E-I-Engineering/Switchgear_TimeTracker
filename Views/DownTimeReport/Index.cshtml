@@ -1,25 +1,26 @@
 ﻿@model DownTimeReportViewModel
 <h1>Report Down Time</h1>
-<form method="post" action="/" id="clockDownTimeForm">
+<form method="post" action="/DowntimeReport/ClockUserIntoDownTime" id="clockDownTimeForm">
 	@Html.AntiForgeryToken()
     <label for="DTReasonID">Reason</label>
     <select id="DTReasonID" name="DTReasonID">
         <option value="" selected disabled>Select a reason</option>
 		@foreach (var reason in Model.DowntimeReasons)
 		{
-			<option>@reason.Text</option>
+            <option value=@reason.Id>@reason.Text</option>
 		}
 	</select>
-	<label for="scanUserIntoDowntime">Scan User</label>
-	<input id="scanUserIntoDowntime" name="downtimeUser" type="number"/>
-    <select id="DTuserID" name="userID">
-        @foreach (var user in Model.TblEmployees)
-        {
-            <option data-tagno="@user.TagNo" value="@user.Id">
-                @user.FullName
-            </option>
-        }
-    </select>
+    <label for="downtimeUser">Scan User</label>
+    <input id="downtimeUser" name="downtimeUser" type="number" />
+     <select id="DTuserID" name="userID"> 
+         @foreach (var user in Model.TblEmployees)
+         { 
+             <option data-tagno="@user.TagNo" value="@user.Id"> 
+                 @user.FullName 
+             </option> 
+         } 
+     </select> 
+     <button type="submit">Submit</button>
 </form>
 <script>
 
@@ -28,7 +29,7 @@
        const form = document.getElementById("clockDownTimeForm");
        const userSelectReasonIDInputElement = document.getElementById("DTReasonID");
        const userSelectUserIDInputElement = document.getElementById("DTuserID");
-	   const userScanElement = document.getElementById("scanUserIntoDowntime");
+       const userScanElement = document.getElementById("downtimeUser");
        const userOptions = Array.from(userSelectUserIDInputElement.options);
 
        // EventListeners

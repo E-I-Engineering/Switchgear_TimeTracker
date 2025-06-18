@@ -24,7 +24,7 @@
     }
 </section>
 
-     
+
 <form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
     @Html.AntiForgeryToken()
     <h2>Clock in/out</h2>
@@ -61,9 +61,6 @@
     <dl>
         <dt>Project Hours worked</dt>
         <dd>@Model.HoursWorked["project"]</dd>
-
-        <dt>Employees working</dt> 
-        <dd>@workingUsers.Count()</dd>
     </dl>
     @* <ul> *@
     @*     @foreach (var timeStamp in workingUsers)  *@
@@ -74,6 +71,20 @@
     @*         </li>  *@
     @*     } *@
     @* </ul> *@
+    <table>
+        <caption>Working Users</caption>
+        <tr>
+            <th>Emp</th>
+            @* <th>Start</th> *@
+        </tr>
+        @foreach (var worker in workingUsers)
+        {
+            <tr>
+                <td>@worker.Name</td>
+                @* <td>@worker.</td> *@
+            </tr>
+        }
+    </table>
     <table>
         <caption>Down Workers</caption>
         <tr>

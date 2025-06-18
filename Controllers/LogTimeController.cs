@@ -95,7 +95,7 @@ namespace Switchgear_TimeTracker.Controllers
                 }
                 else
                 {
-                    TempData["AlertMessage"] = alertType + ": User was not clocked in. Try again later. Contact Coleman Alexander if problem persists.";
+                    TempData["AlertMessage"] = alertType + ": User was not clocked in. Try again later. Contact the maintainer of the app if problem persists.";
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
                 }
             }
@@ -162,7 +162,7 @@ namespace Switchgear_TimeTracker.Controllers
 
                 var hoursWorked = new Dictionary<string, double>();
                 // Calculate logged time for this project
-                var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue);
+                var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue && timeStamp.DowntimeReason is null);
                 hoursWorked.Add("project", 0.0);
                 foreach (var laborTimeStamp in projectClosedTimeStamps)
                 {
