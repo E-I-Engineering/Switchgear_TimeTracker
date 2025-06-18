@@ -14,7 +14,7 @@
     <h3>Area: @Model?.SelectedTask?.Area?.Name</h3>
     <h3>Task: @Model?.SelectedTask?.Action?.Name</h3> <progress max="100" value="@percentTaskComplete">@percentTaskComplete</progress>
     <br />
-    <a href="/LogTime/SelectTask">Change Task</a>
+    <a class="btn btn btn-outline-dark" href="/LogTime/SelectTask">Change Task</a>
     <br /><br />
     @if (Model?.BackplateSelect != null)
     {
@@ -36,7 +36,7 @@
             </option>
         }
     </select>
-    <button type="submit">clock</button>
+    <button class="btn btn-primary" type="submit">clock</button>
     <br />
     <label for="userTag">Scan user:</label>
     <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
@@ -55,7 +55,7 @@
         }
     </div>
 }
-<a class="bigLinkButton"href="/DowntimeReport">Down Time</a>
+<a class="btn btn-outline-dark" href="/DowntimeReport">Down Time</a>
 <section>
     <h2>Current status info</h2>
     <dl>

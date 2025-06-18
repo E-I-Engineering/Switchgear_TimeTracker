@@ -1,4 +1,9 @@
 ﻿@model DownTimeReportViewModel
+@{
+    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
+    string errorText = Convert.ToString(TempData["ErrorText"]);
+    string alertType = Convert.ToString(TempData["AlertType"]);
+}
 <h1>Report Down Time</h1>
 <form method="post" action="/DowntimeReport/ClockUserIntoDownTime" id="clockDownTimeForm">
 	@Html.AntiForgeryToken()
@@ -12,7 +17,7 @@
 	</select>
     <label for="downtimeUser">Scan User</label>
     <input id="downtimeUser" name="downtimeUser" type="number" />
-     <select id="DTuserID" name="userID"> 
+     <select id="DTuserID" name="userID" style="display: none"> 
          @foreach (var user in Model.TblEmployees)
          { 
              <option data-tagno="@user.TagNo" value="@user.Id"> 
@@ -20,8 +25,19 @@
              </option> 
          } 
      </select> 
-     <button type="submit">Submit</button>
 </form>
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert @alertType">
+        <strong>@Html.Raw(alertMessage)</strong>
+        @if (!string.IsNullOrEmpty(errorText))
+        {
+            <br />
+            <br />
+            <p>Error: @errorText</p>
+        }
+    </div>
+}
 <script>
 
     document.addEventListener("DOMContentLoaded", () => {
