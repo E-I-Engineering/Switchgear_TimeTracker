@@ -3,6 +3,7 @@
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
     string errorText = Convert.ToString(TempData["ErrorText"]);
     string alertType = Convert.ToString(TempData["AlertType"]);
+    ViewData["Title"] = "Downtime";
 }
 <h1>Report Down Time</h1>
 <form method="post" action="/DowntimeReport/ClockUserIntoDownTime" id="clockDownTimeForm">
