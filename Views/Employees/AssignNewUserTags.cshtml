@@ -2,7 +2,7 @@
     string alertType = Convert.ToString(TempData["AlertType"]);
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
     string errorText = Convert.ToString(TempData["ErrorText"]);
-    ViewData["Title"] = "Assign New User a Tag";
+    ViewData["Title"] = "Assign Tag";
 }
 <h1>@ViewData["Title"]</h1>
 <form id="assignNewTagForm" method="post" action="/Employees/AssignNewUserTagNumber">
