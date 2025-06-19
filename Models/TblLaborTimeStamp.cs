@@ -30,9 +30,15 @@ public partial class TblLaborTimeStamp
     [Column("BackplateID")]
     public int? BackplateId { get; set; }
 
+    public int? DowntimeReasonID { get; set; }
+
     [ForeignKey("BackplateId")]
     [InverseProperty("TblLaborTimeStamps")]
     public virtual TblBackplate Backplate { get; set; }
+
+    [ForeignKey("DowntimeReasonID")]
+    [InverseProperty("TblLaborTimeStamps")]
+    public virtual TblDowntimeReason DowntimeReason { get; set; }
 
     [ForeignKey("TaskId")]
     [InverseProperty("TblLaborTimeStamps")]

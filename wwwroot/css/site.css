@@ -30,6 +30,7 @@ ol, ul {
 table {
     border-collapse: separate;
     border-spacing: 0;
+    caption-side: top;
 }
 caption, th, td {
     text-align: left;
@@ -87,3 +88,13 @@ body {
     .alert.Failure {
         background-color: red
     }
+
+/* Tables */
+td {
+  border: 1px solid grey;  
+  padding-inline: 0.2rem;
+}
+
+button, a {
+    margin-block: 0.3rem;
+}

@@ -1,6 +1,6 @@
 ﻿namespace Switchgear_TimeTracker.Models
 {
-    public class TaskLogsViewModel
+    public class LogTimeViewModel
     {
         // Property to hold the selected Task
         public TblTemplatePlanningPanelInfo SelectedTask { get; set; }
@@ -12,7 +12,7 @@
         public Dictionary<string, double> HoursWorked { get; set; }
 
         // Property to hold list of all users for matching tagno to user ID
-        public IEnumerable<SimpleEmployee> SimpleAllWorkers { get; set; }
+        public Dictionary<string, IEnumerable<SimpleEmployee>> Workers { get; set; }
 
         // Backplate scanning time for, if applicable
 

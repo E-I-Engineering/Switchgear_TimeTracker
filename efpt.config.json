@@ -19,6 +19,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl_downtime_Reasons]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl_Employees]",
          "ObjectType": 0
       },

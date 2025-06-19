@@ -95,7 +95,7 @@ namespace Switchgear_TimeTracker.Controllers
                 }
                 else
                 {
-                    TempData["AlertMessage"] = alertType + ": User was not clocked in. Try again later. Contact Coleman Alexander if problem persists.";
+                    TempData["AlertMessage"] = alertType + ": User was not clocked in. Try again later. Contact the maintainer of the app if problem persists.";
                     TempData["ErrorText"] = Convert.ToString(ex.Message);
                 }
             }
@@ -106,8 +106,10 @@ namespace Switchgear_TimeTracker.Controllers
         }
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
+            // Constants
+            int DOWN_TIME_ACTION_ID = 19;
             // If task is not selected, redirect to select task page
-            if (taskID == null)
+            if (taskID is null)
             {
                 return RedirectToAction("SelectTask");
             }
@@ -119,15 +121,24 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel.Backplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
-            if (selectedTask == null || selectedTask?.Pannel == null)
+            if (selectedTask is null || selectedTask?.Pannel is null)
             {
                 TempData["AlertMessage"] = "Task Id not found";
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = "Invalid task ID scanned";
                 return RedirectToAction("SelectTask");
             }
+            TblBackplate selectedBackplate;
+            try
+            {
+                selectedBackplate = selectedTask.Pannel.Backplates.Single(b => b.Id == backplateID);
+            }
+            catch (Exception ex)
+            {
+                selectedBackplate = null;
+            }
             // Does selected backplate exist on selected panel
-            if (backplateID != null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
+            if (backplateID is not null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
             {
                 TempData["AlertMessage"] = "Backplate does not exist on selected panel.";
                 TempData["AlertType"] = "Failure";
@@ -135,31 +146,23 @@ namespace Switchgear_TimeTracker.Controllers
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
-            if (selectedTask?.AreaId == 6 && backplateID == null)
+            if (selectedTask?.AreaId == 6 && backplateID is null)
             {
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
 
-            TblBackplate selectedBackplate;
-            try
-            {
-                selectedBackplate = selectedTask?.Pannel?.Backplates?.Single(b => b.Id == backplateID);
-            }
-            catch (Exception ex)
-            {
-                selectedBackplate = null;
-            }
                 // All timestamps for the selected project
                 var projectLaborTimeStamps = await _context
                     .TblLaborTimeStamps
                     .Include(t => t.User)
                     .Include(t => t.Task)
-                    .Where(timeStamp => timeStamp.Task.Pannel.Project.Id == selectedTask.ProjectId)
+                    .Include(t => t.DowntimeReason)
+                    .Where(timeStamp => timeStamp.Task.Pannel.Id == selectedTask.Pannel.Id)
                     .ToListAsync();
 
                 var hoursWorked = new Dictionary<string, double>();
                 // Calculate logged time for this project
-                var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue);
+                var projectClosedTimeStamps = projectLaborTimeStamps.Where(timeStamp => timeStamp.ClockOut.HasValue && timeStamp.DowntimeReason is null);
                 hoursWorked.Add("project", 0.0);
                 foreach (var laborTimeStamp in projectClosedTimeStamps)
                 {
@@ -171,7 +174,7 @@ namespace Switchgear_TimeTracker.Controllers
                 // Filter timestamps for selected task only
                 var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
                 // Calculate logged time for this Task on this project
-                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null);
+                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null && timestamp.DowntimeReasonID is null);
                 hoursWorked.Add("task", 0.0);
                 foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
                 {
@@ -196,15 +199,37 @@ namespace Switchgear_TimeTracker.Controllers
                     .ToListAsync();
                 //All workers clocked into this task
                 var workingUsers = taskLaborTimeStamps
-                     .Where(timestamp => timestamp.ClockOut != null)
-                     .Select(timestamp => timestamp.User)
+                     .Where(timestamp => timestamp.ClockOut is null && timestamp.DowntimeReason is null)
+                     .Select(timestamp => new SimpleEmployee
+                     {
+                         Id= timestamp.User.Id,
+                         TagNo = timestamp.User.TagNo,
+                         Name = timestamp.User.FullName
+                     })
                      .ToList();
-                var viewModel = new TaskLogsViewModel
+                var downTimeUsers = taskLaborTimeStamps
+                    .Where(timestamp => timestamp.ClockOut is null && timestamp.DowntimeReason is not null)
+                    .Select(timestamp => new SimpleEmployee
+                    {
+                        Id = timestamp.User.Id,
+                        TagNo= timestamp.User.TagNo,
+                        Name = timestamp.User.FullName,
+                        ReasonDown = timestamp.DowntimeReason?.Text ?? "[No reason stored]"
+                    })
+                    .ToList();
+
+            var workersDictionary = new Dictionary<string, IEnumerable<SimpleEmployee>>()
+            {
+                { "all", allWorkers },
+                { "clockedIn", workingUsers },
+                { "downUsers", downTimeUsers }
+            };
+                var viewModel = new LogTimeViewModel
                 {
                     SelectedTask = selectedTask,
                     LaborTimeStamps = taskLaborTimeStamps,
                     HoursWorked = hoursWorked,
-                    SimpleAllWorkers = allWorkers,
+                    Workers = workersDictionary,
                     BackplateSelect = selectedBackplate
                 };
                 return View(viewModel);

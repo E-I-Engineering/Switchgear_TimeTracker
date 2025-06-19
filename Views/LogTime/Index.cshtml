@@ -1,8 +1,10 @@
-﻿@model TaskLogsViewModel
+﻿@model LogTimeViewModel
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
     string alertMessage = Convert.ToString(TempData["AlertMessage"]);
     string errorText = Convert.ToString(TempData["ErrorText"]);
+    double percentTaskComplete = Model.HoursWorked["task"] / (double)Model?.SelectedTask?.Time * 100;
+    var workingUsers = Model.Workers["clockedIn"];
     ViewData["Title"] = "Time Logger";
 }
 
@@ -10,8 +12,9 @@
     <h2>Project: @Model?.SelectedTask?.Pannel?.Project?.ProjectNo</h2>
     <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
     <h3>Area: @Model?.SelectedTask?.Area?.Name</h3>
-    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3>
-    <a href="/LogTime/SelectTask">Change Task</a>
+    <h3>Task: @Model?.SelectedTask?.Action?.Name</h3> <progress max="100" value="@percentTaskComplete">@percentTaskComplete</progress>
+    <br />
+    <a class="btn btn btn-outline-dark" href="/LogTime/SelectTask">Change Task</a>
     <br /><br />
     @if (Model?.BackplateSelect != null)
     {
@@ -22,63 +25,80 @@
 </section>
 
 
-@{
-    // filter time stamps for ones currently running
-    var workingUsers = @Model?.LaborTimeStamps?.Where(timeStamp => timeStamp.ClockOut == null);
-}       
 <form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
     @Html.AntiForgeryToken()
     <h2>Clock in/out</h2>
     <select id="userID" name="userID">
-        @foreach (var user in Model.SimpleAllWorkers)
+        @foreach (var user in Model.Workers["all"])
         {
             <option data-tagno="@user.TagNo" value="@user.Id">
                 @user.Name
             </option>
         }
     </select>
-    <button type="submit">clock</button>
+    <button class="btn btn-primary" type="submit">clock</button>
     <br />
     <label for="userTag">Scan user:</label>
     <input name="userTag" id="userTag" type="text" autofocus class='form-control input-sm' />
     <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     <input name="backplateIDInput" id="backplateIDInput" type="hidden" value="@Model?.BackplateSelect?.Id" />
-    </form>
-    @if (!string.IsNullOrEmpty(alertMessage))
-    {
-        <div class="alert @alertType">
+</form>
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <div class="alert @alertType">
         <strong>@Html.Raw(alertMessage)</strong>
         @if (!string.IsNullOrEmpty(errorText))
-            {                
-                <br />
-                <br />
+        {                
+            <br />
+            <br />
             <p>Error: @errorText</p>
-            }
-        </div>
-    }
-    <section>
-        <dl>
-            <dt>Project Hours worked</dt>
-            <dd>@Model.HoursWorked["project"]</dd>
-
-            <dt>Task Hours worked</dt>
-            <dd>@Model.HoursWorked["task"]</dd>
-
-            <dt>Hours Required</dt>
-            <dd>To be added</dd>
-
-             <dt>Employees working</dt> 
-             <dd>@workingUsers.Count()</dd> 
-        </dl>
-        <ul>
-             @foreach (var timeStamp in workingUsers) 
-             { 
-                 string userName = timeStamp.User?.FullName ?? "Unknown User"; 
-                 <li> 
-                     @userName 
-                 </li> 
-             }
-        </ul>
+        }
+    </div>
+}
+<a class="btn btn-outline-dark" href="/DowntimeReport">Down Time</a>
+<section>
+    <h2>Current Project info</h2>
+    <dl>
+        <dt>Project Hours worked</dt>
+        <dd>@Model.HoursWorked["project"]</dd>
+    </dl>
+    @* <ul> *@
+    @*     @foreach (var timeStamp in workingUsers)  *@
+    @*     {  *@
+    @*         string userName = timeStamp?.Name ?? "Unknown User";  *@
+    @*         <li>  *@
+    @*             @userName  *@
+    @*         </li>  *@
+    @*     } *@
+    @* </ul> *@
+    <table>
+        <caption>Working Users</caption>
+        <tr>
+            <th>Emp</th>
+            @* <th>Start</th> *@
+        </tr>
+        @foreach (var worker in workingUsers)
+        {
+            <tr>
+                <td>@worker.Name</td>
+                @* <td>@worker.</td> *@
+            </tr>
+        }
+    </table>
+    <table>
+        <caption>Down Workers</caption>
+        <tr>
+            <th>Emp</th>
+            <th>Reason</th>
+        </tr>
+        @foreach (var worker in Model.Workers["downUsers"])
+        {
+			<tr>
+                <td>@worker.Name</td>
+                <td>@worker.ReasonDown</td>
+            </tr>
+        }
+    </table>
     </section>
 
 <script>

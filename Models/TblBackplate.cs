@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Switchgear_TimeTracker.Models;
 
 [Table("tbl_Backplates")]
+[Index("PanelId", "Section", "Position", Name = "unique_backplate_info", IsUnique = true)]
 public partial class TblBackplate
 {
     [Key]
@@ -26,7 +27,6 @@ public partial class TblBackplate
     [ForeignKey("PanelId")]
     [InverseProperty("Backplates")]
     public virtual TblProjectPanelInfo Panel { get; set; }
-
 
     [InverseProperty("Backplate")]
     public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();

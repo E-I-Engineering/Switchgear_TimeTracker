@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Switchgear_TimeTracker.Models;
 
 [Table("tbl_template_planning_panel_info")]
+[Index("ActionId", "PannelId", Name = "UNIQUE_PANEL_ACTION", IsUnique = true)]
 public partial class TblTemplatePlanningPanelInfo
 {
     [Key]
@@ -49,5 +50,4 @@ public partial class TblTemplatePlanningPanelInfo
 
     [InverseProperty("Task")]
     public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
-
 }
