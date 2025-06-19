@@ -94,6 +94,10 @@ td {
   border: 1px solid grey;  
   padding-inline: 0.2rem;
 }
+caption {
+    font-size: 1.9rem;
+    font-weight: 400;
+}
 
 button, a {
     margin-block: 0.3rem;
