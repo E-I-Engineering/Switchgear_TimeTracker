@@ -75,11 +75,12 @@ namespace Switchgear_TimeTracker.Controllers
                      );
                     TempData["AlertMessage"] = resultMessage.Value;
                     TempData["AlertType"] = "Success";
-                    if (resultBackplateID.Value is null)
+                    if (resultTaskID.Value is not null)
                     {
-                        return RedirectToAction("Index", "LogTime", new { taskID = resultTaskID.Value });
+                        return RedirectToAction("Index", "LogTime", new { taskID = resultTaskID.Value, backplateID = resultBackplateID.Value });
                     }
-                    return RedirectToAction("Index", "LogTime", new { taskID = resultTaskID.Value, backplateID = resultBackplateID.Value });
+                    return RedirectToAction("Index");
+
                 }
             }
             catch (Exception ex)
