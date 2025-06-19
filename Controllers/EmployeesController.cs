@@ -25,7 +25,7 @@ namespace Switchgear_TimeTracker.Controllers
         {
             return View("AssignNewUserTags");
         }
-        public async Task<IActionResult> ViewEmployees()
+        public async Task<IActionResult> EmployeeStatus()
         {
             var activeTimestamps = await _context.TblLaborTimeStamps
                 .Where(t => t.ClockOut == null)
