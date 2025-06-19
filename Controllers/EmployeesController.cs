@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Switchgear_TimeTracker.Data;
+using Switchgear_TimeTracker.Models;
 
 
 namespace Switchgear_TimeTracker.Controllers
@@ -24,9 +25,22 @@ namespace Switchgear_TimeTracker.Controllers
         {
             return View("AssignNewUserTags");
         }
-        public IActionResult ViewEmployees()
+        public async Task<IActionResult> ViewEmployees()
         {
-            return View("ViewEmployees");
+            var activeTimestamps = await _context.TblLaborTimeStamps
+                .Where(t => t.ClockOut == null)
+                .Include(t => t.Task)
+                .Include(t => t.User)
+                .Include (t => t.DowntimeReason)
+                .ToListAsync();
+            var workingUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID == null).ToList();
+            var downUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID != null).ToList();
+            EmployeeListsModel employeeStats = new EmployeeListsModel()
+            {
+                Working = workingUsersTimeStamps,
+                Down = downUsersTimeStamps
+            };
+            return View(employeeStats);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
