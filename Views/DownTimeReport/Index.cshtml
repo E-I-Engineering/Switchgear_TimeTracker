@@ -1,10 +1,8 @@
 ﻿@model DownTimeReportViewModel
 @{
-    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
-    string errorText = Convert.ToString(TempData["ErrorText"]);
-    string alertType = Convert.ToString(TempData["AlertType"]);
     ViewData["Title"] = "Downtime";
 }
+<link rel="stylesheet" href="~/css/dark-theme.css" />
 <h1>Report Down Time</h1>
 <form method="post" action="/DowntimeReport/ClockUserIntoDownTime" id="clockDownTimeForm">
 	@Html.AntiForgeryToken()
@@ -27,18 +25,6 @@
          } 
      </select> 
 </form>
-@if (!string.IsNullOrEmpty(alertMessage))
-{
-    <div class="alert @alertType">
-        <strong>@Html.Raw(alertMessage)</strong>
-        @if (!string.IsNullOrEmpty(errorText))
-        {
-            <br />
-            <br />
-            <p>Error: @errorText</p>
-        }
-    </div>
-}
 <script>
 
     document.addEventListener("DOMContentLoaded", () => {

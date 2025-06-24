@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string alertType = Convert.ToString(TempData["AlertType"]);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +14,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="LogTime" asp-action="Index">@ViewData["Title"]</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -21,19 +24,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="LogTime" asp-action="Index">Log Time</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="LogTime" asp-action="Index">Log Time</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DownTimeReport" asp-action="Index">Downtime</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="DownTimeReport" asp-action="Index">Downtime</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="EmployeeStatus">Live Status</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Employees" asp-action="EmployeeStatus">Live Status</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="AssignNewUserTags">Assign Tag</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Employees" asp-action="AssignNewUserTags">Assign Tag</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Backplates" asp-action="Index">Backplates</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Backplates" asp-action="Index">Backplates</a>
                         </li>
                     </ul>
                 </div>
@@ -42,6 +45,18 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["AlertMessage"] != null)
+            {
+                <div class="alert @alertType">
+                    <strong>@Html.Raw(TempData["AlertMessage"])</strong>
+                    @if (TempData["ErrorText"] != null)
+                    {
+                        <br />
+                        <br />
+                        <p>Error: @TempData["ErrorText"]</p>
+                    }
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

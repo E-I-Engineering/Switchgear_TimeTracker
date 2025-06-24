@@ -62,8 +62,7 @@ namespace Switchgear_TimeTracker.Controllers
             {
                 TempData["AlertType"] = "Failure";
                 TempData["ErrorText"] = ex.Message;
-                TempData["AlertMessage"] = "User could not be saved.";
-                
+                TempData["AlertMessage"] = "User could not be saved.";                
             }
             return RedirectToAction("AssignNewUserTags");
         }
