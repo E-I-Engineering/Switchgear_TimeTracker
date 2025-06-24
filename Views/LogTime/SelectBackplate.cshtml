@@ -2,6 +2,7 @@
 @{
     string alertType = Convert.ToString(TempData["AlertType"]);
     ViewData["Title"] = "Backplate Select";
+    string backplateCreateRedirectString = "/Backplates/Index/" + Convert.ToString(Model.Id);
 }
  @if (Model == null || Model.Pannel.Backplates.Count == 0) 
  { 
@@ -37,12 +38,13 @@
             }
         </div>
     }
+    <a href="@backplateCreateRedirectString">Create Backplate</a>
 </div>
 
 @section Scripts {
     <script>
         function scanBackplate(backplateIDClicked = null) {
-            const taskID = @Model.Id
+            const taskID = @Model.Id;
             const scannedBackplateID = typeof backplateIDClicked === "number" ? backplateIDClicked : this.value;
             console.log("ID: ", scannedBackplateID)
             
