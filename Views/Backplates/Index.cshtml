@@ -1,0 +1,51 @@
+﻿@model TblTemplatePlanningPanelInfo
+
+@{
+	ViewData["Title"] = "Backplates";
+	int[] positionOptionArray = { 1, 2, 3, 4, 5, 6, 7 };
+	string[] sectionOptionArray = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K" };
+
+}
+<link rel="stylesheet" href="~/css/dark-theme.css" />
+<section>
+	<h2>Project: @Model?.Pannel?.Project?.ProjectNo</h2>
+	<h2>Panel: @Model?.Pannel?.PanelNumber</h2>
+	<a href="/LogTime/SelectTask">Change Panel</a>
+</section>
+<form method="post" asp-controller="Backplates" asp-action="CreateBackplateOnPanel">
+	@Html.AntiForgeryToken()
+	<label for="section">Section</label>
+	<select name="section" id="section">
+		<option value="" disabled selected>Select a Section</option>
+		@foreach (var option in sectionOptionArray)
+		{
+			<option>@option</option>
+		}
+	</select>
+	<label for="position">Position</label>
+	<select name="position" id="position">
+		<option value="" disabled selected>Select a Position</option>
+		@foreach (var option in positionOptionArray)
+		{
+			<option>@option</option>
+		};
+	</select>
+	<input type="hidden" value=@Model?.Id name="taskID"/>
+	<input type="hidden" value=@Model?.PannelId name="panelID" />
+	<button>Create</button>
+</form>
+<section>
+	<h2>Existing  backplates</h2>
+@foreach (var backplate in Model.Pannel.Backplates)
+{
+	<p>@backplate.Section@backplate.Position</p>
+}
+</section>
+<div class="alert alert-info bg-dark d-flex align-items-center" role="alert">
+	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+		<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+	</svg>
+	<div>
+		If you need to delete backplates, ask your blue/red shirt to contact Coleman Alexander with the Project/Panel/Backplate info.
+	</div>
+</div>

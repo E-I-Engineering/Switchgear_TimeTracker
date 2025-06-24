@@ -2,25 +2,12 @@
 @model List<Switchgear_TimeTracker.Models.TblProject>
 @{
     ViewData["Title"] = "Task Select";
-    string alertType = Convert.ToString(TempData["AlertType"]);
 }
-
+<link rel="stylesheet" href="~/css/dark-theme.css" />
 <div class="text-center">
         <h3>Scan Panel/Task Code</h3>
     <input type="text" id="scanTaskID" autofocus />
 </div>
-@if (TempData["AlertMessage"] != null)
-{
-    <div class="alert @alertType">
-        <strong>@Html.Raw(TempData["AlertMessage"])</strong>
-        @if (TempData["ErrorText"] != null)
-        {
-            <br />
-            <br />
-            <p>Error: @TempData["ErrorText"]</p>
-        }
-    </div>
-}
 @section Scripts {
     <script>
         function scanTask() {

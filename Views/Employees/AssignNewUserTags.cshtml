@@ -1,9 +1,7 @@
 ﻿@{
-    string alertType = Convert.ToString(TempData["AlertType"]);
-    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
-    string errorText = Convert.ToString(TempData["ErrorText"]);
     ViewData["Title"] = "Assign Tag";
 }
+<link rel="stylesheet" href="~/css/dark-theme.css" />
 <h1>@ViewData["Title"]</h1>
 <form id="assignNewTagForm" method="post" action="/Employees/AssignNewUserTagNumber">
     @Html.AntiForgeryToken()
@@ -17,15 +15,3 @@
     <input name="tagNoInput" id="tagNoInput" type="text" required/><br />
     <button>Assign</button>
 </form>
-@if (!string.IsNullOrEmpty(alertMessage))
-{
-    <div class="alert @alertType">
-        <strong>@Html.Raw(alertMessage)</strong>
-        @if (!string.IsNullOrEmpty(errorText))
-        {
-            <br />
-            <br />
-            <p>Error: @errorText</p>
-        }
-    </div>
-}

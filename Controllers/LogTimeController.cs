@@ -106,8 +106,6 @@ namespace Switchgear_TimeTracker.Controllers
         }
         public async Task<IActionResult> Index(int? taskID, int? backplateID)
         {
-            // Constants
-            int DOWN_TIME_ACTION_ID = 19;
             // If task is not selected, redirect to select task page
             if (taskID is null)
             {

@@ -1,0 +1,104 @@
+﻿/* Dark mode base */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Titles and Headers */
+h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #1f1f1f;
+    padding-bottom: 0.4rem;
+    margin-top: 1.5rem;
+}
+
+/* Link styling */
+a {
+    color: #64b5f6;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+    a:hover {
+        color: #90caf9;
+    }
+
+/* Section styling */
+section {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem auto;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+}
+
+    /* Paragraphs inside foreach loop */
+    section p {
+        background-color: #2c2c2c;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+    }
+
+        section p:hover {
+            background-color: #333;
+        }
+
+/* Form (future-proof) */
+form {
+    background-color: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 2rem auto;
+    width: 90%;
+    max-width: 800px;
+}
+caption {
+    color: #ffffff;
+}
+/* General Inputs */
+input, select, button, textarea {
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #64b5f6;
+        box-shadow: 0 0 0 2px rgba(100, 181, 246, 0.3);
+    }
+
+/* Buttons */
+button {
+    background-color: #64b5f6;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    button:hover {
+        background-color: #90caf9;
+    }
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}

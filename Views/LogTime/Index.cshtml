@@ -1,13 +1,10 @@
 ﻿@model LogTimeViewModel
 @{
-    string alertType = Convert.ToString(TempData["AlertType"]);
-    string alertMessage = Convert.ToString(TempData["AlertMessage"]);
-    string errorText = Convert.ToString(TempData["ErrorText"]);
     double percentTaskComplete = Model.HoursWorked["task"] / (double)Model?.SelectedTask?.Time * 100;
     var workingUsers = Model.Workers["clockedIn"];
     ViewData["Title"] = "Time Logger";
 }
-
+<link rel="stylesheet" href="~/css/dark-theme.css" />
 <section>
     <h2>Project: @Model?.SelectedTask?.Pannel?.Project?.ProjectNo</h2>
     <h2>Panel: @Model?.SelectedTask?.Pannel?.PanelNumber</h2>
@@ -43,18 +40,6 @@
     <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     <input name="backplateIDInput" id="backplateIDInput" type="hidden" value="@Model?.BackplateSelect?.Id" />
 </form>
-@if (!string.IsNullOrEmpty(alertMessage))
-{
-    <div class="alert @alertType">
-        <strong>@Html.Raw(alertMessage)</strong>
-        @if (!string.IsNullOrEmpty(errorText))
-        {                
-            <br />
-            <br />
-            <p>Error: @errorText</p>
-        }
-    </div>
-}
 <a class="btn btn-outline-dark" href="/DowntimeReport">Down Time</a>
 <section>
     <h2>Current Project info</h2>

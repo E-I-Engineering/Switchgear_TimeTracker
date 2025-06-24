@@ -1,8 +1,9 @@
 ﻿@model Switchgear_TimeTracker.Models.TblTemplatePlanningPanelInfo
-@{
-    string alertType = Convert.ToString(TempData["AlertType"]);
+@{    
     ViewData["Title"] = "Backplate Select";
+    string backplateCreateRedirectString = "/Backplates/Index/" + Convert.ToString(Model.Id);
 }
+<link rel="stylesheet" href="~/css/dark-theme.css" />
  @if (Model == null || Model.Pannel.Backplates.Count == 0) 
  { 
      <p>No backplates have been created for this panel. Contact the app maintainer to create backplates for this panel.</p> 
@@ -25,24 +26,13 @@
              <button onclick="scanBackplate( @backplate.Id )">@backplate.Section @backplate.Position</button> 
          }
     </div>
-    @if (TempData["AlertMessage"] != null)
-    {
-        <div class="alert @alertType">
-            <strong>@Html.Raw(TempData["AlertMessage"])</strong>
-            @if (TempData["ErrorText"] != null)
-            {
-                <br />
-                <br />
-                <p>Error: @TempData["ErrorText"]</p>
-            }
-        </div>
-    }
+    <a href="@backplateCreateRedirectString">Create Backplate</a>
 </div>
 
 @section Scripts {
     <script>
         function scanBackplate(backplateIDClicked = null) {
-            const taskID = @Model.Id
+            const taskID = @Model.Id;
             const scannedBackplateID = typeof backplateIDClicked === "number" ? backplateIDClicked : this.value;
             console.log("ID: ", scannedBackplateID)
             
