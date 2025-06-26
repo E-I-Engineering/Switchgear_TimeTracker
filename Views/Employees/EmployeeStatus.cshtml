@@ -10,13 +10,25 @@
 	<caption>Working</caption>
 	<tr>
 		<th>Emp</th>
+		<th>Project</th>
+		<th>Panel</th>
+		<th>Backplate</th>
 		<th>Started</th>
 
 	</tr>
 @foreach (var timestamp in Model.Working)
 {
 	<tr>
-		<td>@timestamp.User.FullName</td>
+		<td>@timestamp.User.ClockNumber</td>
+		<td>
+			@timestamp.Task.Pannel.Project.ProjectNo
+		</td>
+		<td>
+			@timestamp.Task.Pannel.PanelNumber
+		</td>
+		<td>
+				@timestamp.Backplate.Section@timestamp.Backplate.Position
+		</td>
 		<td>@timestamp.ClockIn</td>
 	</tr>
 }
@@ -33,7 +45,7 @@
 	@foreach (var timestamp in Model.Down)
 	{
 		<tr>
-			<td>@timestamp.User.FullName</td>
+			<td>@timestamp.User.ClockNumber</td>
 			<td>@timestamp.DowntimeReason.Text</td>
 			<td>@timestamp.ClockIn</td>
 		</tr>
