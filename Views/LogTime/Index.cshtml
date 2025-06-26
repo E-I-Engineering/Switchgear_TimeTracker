@@ -11,13 +11,13 @@
     <h3>Area: @Model?.SelectedTask?.Area?.Name</h3>
     <h3>Task: @Model?.SelectedTask?.Action?.Name</h3> <progress max="100" value="@percentTaskComplete">@percentTaskComplete</progress>
     <br />
-    <a class="btn btn btn-outline-dark" href="/LogTime/SelectTask">Change Task</a>
+    <a class="btn btn-secondary" href="/LogTime/SelectTask">Change Task</a>
     <br /><br />
     @if (Model?.BackplateSelect != null)
     {
         <h4>Backplate: @Model.BackplateSelect.Section@Model.BackplateSelect.Position</h4>
-        <a href="/LogTime/SelectBackplate?taskID=@Model.SelectedTask.Id">Change Backplate</a>
-        <br /><br />
+        <a class="btn btn-secondary" href="/LogTime/SelectBackplate?taskID=@Model.SelectedTask.Id">Change Backplate</a>
+        <a class="btn btn-secondary" href="/DowntimeReport">Down Time</a>
     }
 </section>
 
@@ -40,7 +40,6 @@
     <input name="taskClock" id="taskClock" type="hidden" value=@Model.SelectedTask.Id />
     <input name="backplateIDInput" id="backplateIDInput" type="hidden" value="@Model?.BackplateSelect?.Id" />
 </form>
-<a class="btn btn-outline-dark" href="/DowntimeReport">Down Time</a>
 <section>
     <h2>Current Project info</h2>
     <dl>

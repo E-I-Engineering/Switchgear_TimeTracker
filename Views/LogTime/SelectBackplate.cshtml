@@ -15,7 +15,7 @@
         <h3>Area: @Model?.Area?.Name</h3>
         <h3>Task: @Model?.Action?.Name</h3>
 
-        <a href="/LogTime/SelectTask">Change Task</a>
+        <a class="btn btn-secondary" href="/LogTime/SelectTask">Change Task</a>
     </section>
     <br />
     <h3>Scan Backplate Code</h3>
@@ -26,7 +26,7 @@
              <button onclick="scanBackplate( @backplate.Id )">@backplate.Section @backplate.Position</button> 
          }
     </div>
-    <a href="@backplateCreateRedirectString">Create Backplate</a>
+    <a class="btn btn-secondary" href="@backplateCreateRedirectString">Create Backplate</a>
 </div>
 
 @section Scripts {
