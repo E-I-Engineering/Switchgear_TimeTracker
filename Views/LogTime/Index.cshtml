@@ -96,8 +96,8 @@
             userScanElement.addEventListener("keydown", event => {
                 if (event.key === "Enter") {
                     event.preventDefault();
-                    const userTagNo = event.target.value.trim();
-                    const matchedOption = userOptions.find(option => option.dataset.tagno === userTagNo);
+                    const userTagNo = parseInt(event.target.value.trim());
+                    const matchedOption = userOptions.find(option => parseInt(option.dataset.tagno) === userTagNo);
                     if (!matchedOption) {
                         alert("No user with that tag.");
                         userScanElement.value = "";
