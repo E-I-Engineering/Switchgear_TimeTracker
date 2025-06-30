@@ -32,6 +32,9 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Task)
                 .Include(t => t.User)
                 .Include (t => t.DowntimeReason)
+                .Include(t => t.Task.Pannel)
+                .Include(t => t.Task.Pannel.Project)
+                .Include(t => t.Backplate)
                 .ToListAsync();
             var workingUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID == null).ToList();
             var downUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID != null).ToList();
