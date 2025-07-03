@@ -53,11 +53,12 @@ namespace Switchgear_TimeTracker.Controllers
         {
             try
             {
-                await _context.Database.ExecuteSqlRawAsync($"EXECUTE dbo.spAddEmployeeUserClockTag @FullName, @Email, @TagNo, @ClockNumber ",
+                await _context.Database.ExecuteSqlRawAsync($"EXECUTE dbo.spAddEmployeeUserClockTag @FullName, @Email, @TagNo, @ClockNumber, @SupervisorID ",
                    new SqlParameter("@FullName", form["userFullName"].ToString()),
                    new SqlParameter("@Email", form["userEmail"].ToString()),
                    new SqlParameter("@TagNo", long.Parse(form["tagNoInput"])),
-                   new SqlParameter("@ClockNumber", int.Parse(form["userClockNumber"]))
+                   new SqlParameter("@ClockNumber", int.Parse(form["userClockNumber"])),
+                   new SqlParameter("@SupervisorID", int.Parse(form["supervisorID"]))
                 );
                 TempData["AlertType"] = "Success";
                 TempData["AlertMessage"] = $"User {form["userFullName"]} was created in the system and assigned tag number {form["tagNoInput"]}.";
