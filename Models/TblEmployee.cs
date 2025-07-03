@@ -34,6 +34,13 @@ public partial class TblEmployee
     [Unicode(false)]
     public string TagNo { get; set; }
 
+    [Column("SupervisorID")]
+    public int? SupervisorId { get; set; }
+
+    [ForeignKey("SupervisorId")]
+    [InverseProperty("TblEmployees")]
+    public virtual TblSupervisor Supervisor { get; set; }
+
     [InverseProperty("User")]
     public virtual List<TblLaborTimeStamp> TblLaborTimeStamps { get; set; }
 }

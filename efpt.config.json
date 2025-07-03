@@ -39,6 +39,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[tbl_supervisors]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tbl_template_planning_area]",
          "ObjectType": 0
       },

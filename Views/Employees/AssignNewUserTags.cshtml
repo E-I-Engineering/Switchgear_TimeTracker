@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<TblSupervisor>
+@{
     ViewData["Title"] = "Assign Tag";
 }
 <link rel="stylesheet" href="~/css/dark-theme.css" />
@@ -13,5 +14,12 @@
     <input name="userEmail" id="userEmail" type="email" required/><br />
     <label for="tagNoInput">Scan Tag:</label>
     <input name="tagNoInput" id="tagNoInput" type="text" required/><br />
+    <label for="supervisorID">Supervisor</label>
+    <select name="supervisorID" id="supervisorID" required >
+        @foreach (var supervisor in Model)
+        {
+            <option value=@supervisor.Id>@supervisor.FullName</option>
+        }
+    </select>
     <button>Assign</button>
 </form>

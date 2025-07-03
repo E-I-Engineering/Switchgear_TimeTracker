@@ -25,7 +25,7 @@ public partial class TblBackplate
     public short? Position { get; set; }
 
     [ForeignKey("PanelId")]
-    [InverseProperty("Backplates")]
+    [InverseProperty("TblBackplates")]
     public virtual TblProjectPanelInfo Panel { get; set; }
 
     [InverseProperty("Backplate")]

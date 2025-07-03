@@ -24,7 +24,7 @@ namespace Switchgear_TimeTracker.Controllers
             var selectedTask = _context.TblTemplatePlanningPanelInfos
                 .Where(t => taskID == t.Id)
                 .Include(t => t.Pannel)
-                .Include (t => t.Pannel.Backplates)
+                .Include (t => t.Pannel.TblBackplates)
                 .Include(t => t.Pannel.Project)
                 .Include(t => t.Action)
                 .Include(t => t.Area)
