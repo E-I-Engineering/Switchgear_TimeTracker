@@ -60,3 +60,17 @@
 		</tr>
 	}
 </table>
+
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const userInput = window.prompt("Enter the password to see all data.");
+		const password = "admincheck4";
+		if (userInput === password) {
+			const hiddenElements = document.getElementsByClassName("passwordProtected");
+			for (let i = 0; i < hiddenElements.length; i++) {
+				hiddenElements[i].style.display = "block";
+			}
+		}
+		console.log(userInput);
+	});
+</script> 
