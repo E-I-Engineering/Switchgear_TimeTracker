@@ -6,10 +6,16 @@
 <link rel="stylesheet" href="~/css/dark-theme.css" />
 <h1>@ViewData["Title"]</h1>
 <br />
+<style>
+	.passwordProtected {
+		display: none;
+	}
+</style>
 <table>
 	<caption>Working</caption>
 	<tr>
-		<th>Emp</th>
+		<th>Clock</th>
+		<th class="passwordProtected">Name</th>
 		<th>Project</th>
 		<th>Panel</th>
 		<th>Backplate</th>
@@ -20,6 +26,7 @@
 {
 	<tr>
 		<td>@timestamp.User.ClockNumber</td>
+		<td class="passwordProtected">@timestamp.User.FullName</td>
 		<td>
 			@timestamp.Task.Pannel.Project.ProjectNo
 		</td>
@@ -38,7 +45,8 @@
 <table>
 	<caption>Downed</caption>
 	<tr>
-		<th>Emp</th>
+		<th>Clock</th>
+		<th class="passwordProtected" >Name</th>
 		<th>Reason</th>
 		<th>Started</th>
 	</tr>
@@ -46,6 +54,7 @@
 	{
 		<tr>
 			<td>@timestamp.User.ClockNumber</td>
+			<td class="passwordProtected">@timestamp.User.FullName</td>
 			<td>@timestamp.DowntimeReason.Text</td>
 			<td>@timestamp.ClockIn</td>
 		</tr>
