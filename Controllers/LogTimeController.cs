@@ -35,7 +35,7 @@ namespace Switchgear_TimeTracker.Controllers
             //var project = await _context.TblProjects.ToListAsync();
             var selectedTask = _context.TblTemplatePlanningPanelInfos
                 .Include(b => b.Pannel)
-                .Include(b => b.Pannel.Backplates)
+                .Include(b => b.Pannel.TblBackplates)
                 .Include(b => b.Pannel.Project)
                 .Include(b => b.Area)
                 .Include(b => b.Action)
@@ -116,7 +116,7 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel.Project)
                 .Include(t => t.Action)
                 .Include(t => t.Area)
-                .Include(t => t.Pannel.Backplates)
+                .Include(t => t.Pannel.TblBackplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
             if (selectedTask is null || selectedTask?.Pannel is null)
@@ -129,14 +129,14 @@ namespace Switchgear_TimeTracker.Controllers
             TblBackplate selectedBackplate;
             try
             {
-                selectedBackplate = selectedTask.Pannel.Backplates.Single(b => b.Id == backplateID);
+                selectedBackplate = selectedTask.Pannel.TblBackplates.Single(b => b.Id == backplateID);
             }
             catch (Exception ex)
             {
                 selectedBackplate = null;
             }
             // Does selected backplate exist on selected panel
-            if (backplateID is not null && !selectedTask.Pannel.Backplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
+            if (backplateID is not null && !selectedTask.Pannel.TblBackplates.Select(bp => bp.Id).ToList().Contains((int)backplateID))
             {
                 TempData["AlertMessage"] = "Backplate does not exist on selected panel.";
                 TempData["AlertType"] = "Failure";
@@ -172,7 +172,7 @@ namespace Switchgear_TimeTracker.Controllers
                 // Filter timestamps for selected task only
                 var taskLaborTimeStamps = projectLaborTimeStamps.Where(timestamp => timestamp.TaskId == taskID);
                 // Calculate logged time for this Task on this project
-                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null && timestamp.DowntimeReasonID is null);
+                var taskProjectClosedTimeStamps = taskLaborTimeStamps.Where(timestamp => timestamp.ClockOut != null && timestamp.DowntimeReasonId is null);
                 hoursWorked.Add("task", 0.0);
                 foreach (var laborTimeStamp in taskProjectClosedTimeStamps)
                 {

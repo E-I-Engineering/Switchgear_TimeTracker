@@ -8,17 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Switchgear_TimeTracker.Models;
 
-[Table("tbl_downtime_Reasons")]
-public partial class TblDowntimeReason
+[Table("tbl_supervisors")]
+public partial class TblSupervisor
 {
     [Key]
     [Column("ID")]
     public int Id { get; set; }
 
-    [StringLength(75)]
+    [StringLength(50)]
     [Unicode(false)]
-    public string Text { get; set; }
+    public string FullName { get; set; }
 
-    [InverseProperty("DowntimeReason")]
-    public virtual ICollection<TblLaborTimeStamp> TblLaborTimeStamps { get; set; } = new List<TblLaborTimeStamp>();
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Email { get; set; }
+
+    [InverseProperty("Supervisor")]
+    public virtual ICollection<TblEmployee> TblEmployees { get; set; } = new List<TblEmployee>();
 }

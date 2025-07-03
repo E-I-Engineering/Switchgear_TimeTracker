@@ -36,8 +36,8 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Task.Pannel.Project)
                 .Include(t => t.Backplate)
                 .ToListAsync();
-            var workingUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID == null).ToList();
-            var downUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonID != null).ToList();
+            var workingUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonId == null).ToList();
+            var downUsersTimeStamps = activeTimestamps.Where(t => t.DowntimeReasonId != null).ToList();
             EmployeeListsModel employeeStats = new EmployeeListsModel()
             {
                 Working = workingUsersTimeStamps,

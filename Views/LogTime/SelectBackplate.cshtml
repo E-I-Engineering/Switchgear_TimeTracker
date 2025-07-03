@@ -4,7 +4,7 @@
     string backplateCreateRedirectString = "/Backplates/Index/" + Convert.ToString(Model.Id);
 }
 <link rel="stylesheet" href="~/css/dark-theme.css" />
- @if (Model == null || Model.Pannel.Backplates.Count == 0) 
+ @if (Model == null || Model.Pannel.TblBackplates.Count == 0) 
  { 
      <p>No backplates have been created for this panel. Contact the app maintainer to create backplates for this panel.</p> 
 } 
@@ -21,7 +21,7 @@
     <h3>Scan Backplate Code</h3>
     <input type="text" id="scanBarcodeID" autofocus />
     <div class="selectBackplate--bpButtons">
-         @foreach (var backplate in @Model.Pannel.Backplates) 
+         @foreach (var backplate in @Model.Pannel.TblBackplates) 
          {
              <button onclick="scanBackplate( @backplate.Id )">@backplate.Section @backplate.Position</button> 
          }
