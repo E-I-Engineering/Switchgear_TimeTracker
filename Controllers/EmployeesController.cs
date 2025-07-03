@@ -20,10 +20,12 @@ namespace Switchgear_TimeTracker.Controllers
         {
             return View();
         }
-
-        public IActionResult AssignNewUserTags()
+      
+        public async Task<IActionResult> AssignNewUserTags()
         {
-            return View("AssignNewUserTags");
+            var supervisors = await _context.TblSupervisors
+                .ToListAsync();
+            return View(supervisors);
         }
         public async Task<IActionResult> EmployeeStatus()
         {
