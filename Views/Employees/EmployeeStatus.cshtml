@@ -20,11 +20,12 @@
 		<th>Panel</th>
 		<th>Backplate</th>
 		<th>Started</th>
-
+		<th>Elapsed</th>
 	</tr>
 @foreach (var timestamp in Model.Working)
 {
-	<tr>
+		var timeElapsed = DateTime.Now - timestamp.ClockIn;
+		<tr>
 		<td>@timestamp.User.ClockNumber</td>
 		<td class="passwordProtected">@timestamp.User.FullName</td>
 		<td>
@@ -37,6 +38,7 @@
 				@timestamp.Backplate.Section@timestamp.Backplate.Position
 		</td>
 		<td>@timestamp.ClockIn</td>
+		<td>@timeElapsed.Days Day(s) : @timeElapsed.Hours Hour(s) : @timeElapsed.Minutes Minute(s)</td>
 	</tr>
 }
 </table>
@@ -49,14 +51,17 @@
 		<th class="passwordProtected" >Name</th>
 		<th>Reason</th>
 		<th>Started</th>
+		<th>Elapsed</th>
 	</tr>
 	@foreach (var timestamp in Model.Down)
 	{
+		var timeElapsed = DateTime.Now - timestamp.ClockIn;
 		<tr>
 			<td>@timestamp.User.ClockNumber</td>
 			<td class="passwordProtected">@timestamp.User.FullName</td>
 			<td>@timestamp.DowntimeReason.Text</td>
 			<td>@timestamp.ClockIn</td>
+			<td>@timeElapsed.Days Day(s) : @timeElapsed.Hours Hour(s) : @timeElapsed.Minutes Minute(s)</td>
 		</tr>
 	}
 </table>
@@ -71,6 +76,5 @@
 				hiddenElements[i].style.display = "block";
 			}
 		}
-		console.log(userInput);
 	});
 </script> 
