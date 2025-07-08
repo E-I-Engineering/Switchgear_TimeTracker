@@ -25,7 +25,8 @@
 <form method='post' action="/LogTime/ClockUserInOut" id="clockInOutForm">
     @Html.AntiForgeryToken()
     <h2>Clock in/out</h2>
-    <select id="userID" name="userID">
+    <select id="userID" name="userID" required>
+        <option data-tagno="" value="" selected disabled>Select a user</option>
         @foreach (var user in Model.Workers["all"])
         {
             <option data-tagno="@user.TagNo" value="@user.Id">
