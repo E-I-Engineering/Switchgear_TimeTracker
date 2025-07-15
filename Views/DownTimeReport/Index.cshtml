@@ -7,7 +7,7 @@
 <form method="post" action="/DowntimeReport/ClockUserIntoDownTime" id="clockDownTimeForm">
 	@Html.AntiForgeryToken()
     <label for="DTReasonID">Reason</label>
-    <select id="DTReasonID" name="DTReasonID">
+    <select id="DTReasonID" name="DTReasonID" required>
         <option value="" selected disabled>Select a reason</option>
 		@foreach (var reason in Model.DowntimeReasons)
 		{
@@ -15,8 +15,9 @@
 		}
 	</select>
     <label for="downtimeUser">Scan User</label>
-    <input id="downtimeUser" name="downtimeUser" type="number" />
-     <select id="DTuserID" name="userID" style="display: none"> 
+    <input id="downtimeUser" type="number" />
+    <select id="DTuserID" name="DTuserID" hidden required>
+        <option selected disabled value=null></option>
          @foreach (var user in Model.TblEmployees)
          { 
              <option data-tagno="@user.TagNo" value="@user.Id"> 
@@ -25,12 +26,10 @@
          } 
      </select> 
 </form>
-<iframe width="100%" height="600" src=https://app.smartsheet.com/b/form/a2c6351529bd49bebfecdb93a5a2863d />
 <script>
-
     document.addEventListener("DOMContentLoaded", () => {
        // Takes rfid tag number and converts it to matching user ID before form submission
-       const form = document.getElementById("clockDownTimeForm");
+       const form = document.getElementById("clockDownTimeForm");       
        const userSelectReasonIDInputElement = document.getElementById("DTReasonID");
        const userSelectUserIDInputElement = document.getElementById("DTuserID");
        const userScanElement = document.getElementById("downtimeUser");
