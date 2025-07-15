@@ -33,7 +33,7 @@ namespace Switchgear_TimeTracker.Controllers
         {
             try
             {
-                int userID = int.Parse(form["userID"]);
+                int userID = int.Parse(form["DTuserID"]);
                 int reasonID = int.Parse(form["DTReasonID"]);
                 {
                     var clockUserID = new SqlParameter("@clockUserID", userID);
