@@ -24,8 +24,7 @@
 	</tr>
 @foreach (var timestamp in Model.Working)
 {
-		var timeElapsed = DateTime.Now.ToLocalTime() - timestamp.ClockIn;
-		<p>@timeElapsed</p>
+		var timeElapsed = DateTime.Now - timestamp.ClockIn;
 		<tr>
 		<td>@timestamp.User.ClockNumber</td>
 		<td class="passwordProtected">@timestamp.User.FullName</td>
@@ -56,7 +55,7 @@
 	</tr>
 	@foreach (var timestamp in Model.Down)
 	{
-		var timeElapsed = DateTime.Now.ToLocalTime() - timestamp.ClockIn;
+		var timeElapsed = DateTime.Now - timestamp.ClockIn;
 		<tr>
 			<td>@timestamp.User.ClockNumber</td>
 			<td class="passwordProtected">@timestamp.User.FullName</td>
