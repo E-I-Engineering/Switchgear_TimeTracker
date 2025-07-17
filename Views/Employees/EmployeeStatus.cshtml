@@ -25,6 +25,11 @@
 @foreach (var timestamp in Model.Working)
 {
 		var timeElapsed = DateTime.Now - timestamp.ClockIn;
+		string daysElapsed = timeElapsed.Days > 0 ? timeElapsed.Days + " Day(s) " : "";
+		string hoursElapsed = timeElapsed.Hours > 0 ? timeElapsed.Hours + " Hour(s) " : "";
+		string minutesElapsed = timeElapsed.Minutes > 0 ? timeElapsed.Minutes + " Minute(s)" : "";
+		string timeElapsedString = daysElapsed + hoursElapsed + minutesElapsed;
+		if (timeElapsedString == "") timeElapsedString = "0 Minutes";
 		<tr>
 		<td>@timestamp.User.ClockNumber</td>
 		<td class="passwordProtected">@timestamp.User.FullName</td>
@@ -38,7 +43,7 @@
 				@timestamp.Backplate.Section@timestamp.Backplate.Position
 		</td>
 		<td>@timestamp.ClockIn</td>
-		<td>@timeElapsed.Days Day(s) : @timeElapsed.Hours Hour(s) : @timeElapsed.Minutes Minute(s)</td>
+		<td>@timeElapsedString</td>
 	</tr>
 }
 </table>
@@ -56,12 +61,17 @@
 	@foreach (var timestamp in Model.Down)
 	{
 		var timeElapsed = DateTime.Now - timestamp.ClockIn;
+		string daysElapsed = timeElapsed.Days > 0 ? timeElapsed.Days + " Day(s) : " : "";
+		string hoursElapsed = timeElapsed.Hours > 0 ? timeElapsed.Hours + " Hour(s) : " : "";
+		string minutesElapsed = timeElapsed.Minutes > 0 ? timeElapsed.Minutes + " Minute(s)" : "";
+		string timeElapsedString = daysElapsed + hoursElapsed + minutesElapsed;
+		if (timeElapsedString == "") timeElapsedString = "0 Minutes";
 		<tr>
 			<td>@timestamp.User.ClockNumber</td>
 			<td class="passwordProtected">@timestamp.User.FullName</td>
 			<td>@timestamp.DowntimeReason.Text</td>
 			<td>@timestamp.ClockIn</td>
-			<td>@timeElapsed.Days Day(s) : @timeElapsed.Hours Hour(s) : @timeElapsed.Minutes Minute(s)</td>
+			<td>@timeElapsedString</td>
 		</tr>
 	}
 </table>

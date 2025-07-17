@@ -22,7 +22,7 @@ public partial class TblLaborTimeStamp
     public int? TaskId { get; set; }
 
     [Column("ClockIN", TypeName = "datetime")]
-    public DateTime ClockIn { get; set; }
+    public required DateTime ClockIn { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? ClockOut { get; set; }
