@@ -115,7 +115,7 @@ namespace Switchgear_TimeTracker.Controllers
                 .Include(t => t.Pannel)
                 .Include(t => t.Pannel.Project)
                 .Include(t => t.Action)
-                .Include(t => t.Area)
+                .Include(t => t.Action.Area)
                 .Include(t => t.Pannel.TblBackplates)
                 .FirstOrDefaultAsync(task => task.Id == taskID);
 
@@ -144,7 +144,7 @@ namespace Switchgear_TimeTracker.Controllers
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }
             // If selected task is within Sub Plus area but backplate is not selected, redirect to SelectBackplate
-            if (selectedTask?.AreaId == 6 && backplateID is null)
+            if (selectedTask?.Action?.AreaId == 6 && backplateID is null)
             {
                 return RedirectToAction("SelectBackplate", new { taskID = taskID });
             }

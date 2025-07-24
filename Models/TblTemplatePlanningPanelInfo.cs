@@ -25,9 +25,6 @@ public partial class TblTemplatePlanningPanelInfo
     [Column("PannelID")]
     public int? PannelId { get; set; }
 
-    [Column("AreaID")]
-    public int? AreaId { get; set; }
-
     [Column("QTY", TypeName = "numeric(18, 0)")]
     public decimal? Qty { get; set; }
 

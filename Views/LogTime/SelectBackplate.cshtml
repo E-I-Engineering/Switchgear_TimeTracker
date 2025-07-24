@@ -4,10 +4,6 @@
     string backplateCreateRedirectString = "/Backplates/Index/" + Convert.ToString(Model.Id);
 }
 <link rel="stylesheet" href="~/css/dark-theme.css" />
- @if (Model == null || Model.Pannel.TblBackplates.Count == 0) 
- { 
-     <p>No backplates have been created for this panel. Contact the app maintainer to create backplates for this panel.</p> 
-} 
 <div class="text-center">
     <section>
         <h2>Project: @Model?.Pannel?.Project?.ProjectNo</h2>
